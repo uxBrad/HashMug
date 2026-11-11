@@ -12,7 +12,7 @@ const small = createAvatar("0xabc...", { grid: 5, tile: "rounded", radius: 0.5, 
 ## Packages
 
 ```
-packages/core            @sigil/core: zero-dependency engine. SHA-256 seeding, face and pixel styles, SVG out
+packages/core            @sigil/core: zero-dependency engine. SHA-256 seeding, face avatars, SVG out
 packages/web-component   @sigil/web-component: <identicon-avatar>, works in any framework
 packages/png             @sigil/png: PNG bytes and raw RGBA pixels (Node, uses resvg)
 packages/edge            @sigil/edge: Hono endpoint. Worker (SVG) and Node (SVG + PNG)
