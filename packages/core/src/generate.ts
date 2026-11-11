@@ -1,6 +1,5 @@
 import { contrast, ensureContrast, hslToRgb, parseHex, rgbToHex, type RGB } from "./color";
-import { hashSeed } from "./hash";
-import { createRng } from "./prng";
+import { createSeedRng, normalizeSeed } from "./seed";
 import type { AvatarModel, AvatarOptions, Cell } from "./types";
 
 const clamp = (v: number, lo: number, hi: number) => Math.min(hi, Math.max(lo, v));
@@ -15,7 +14,7 @@ export function createModel(seed: string, options: AvatarOptions = {}): AvatarMo
   const grid = clampInt(options.grid ?? 8, 3, 32);
   const density = clamp(options.density ?? 0.5, 0.05, 0.95);
   const minContrast = options.minContrast ?? 3;
-  const rng = createRng(hashSeed(seed));
+  const rng = createSeedRng(normalizeSeed(seed, options.normalize));
 
   // Draw all color randomness first so options never shift the stream.
   const hue = rng.range(0, 360);

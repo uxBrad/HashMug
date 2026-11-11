@@ -1,6 +1,6 @@
 import { createFaceSvg } from "./face";
 import { createModel } from "./generate";
-import { hashSeed } from "./hash";
+import { normalizeSeed, seedId } from "./seed";
 import type { AvatarModel, AvatarOptions, Cell } from "./types";
 
 const num = (n: number) => String(Math.round(n * 1000) / 1000);
@@ -25,7 +25,7 @@ export function renderSvg(model: AvatarModel, seed: string, options: AvatarOptio
 
   let clipAttr = "";
   if (radius > 0) {
-    const id = "c" + hashSeed(seed).toString(36);
+    const id = "c" + seedId(normalizeSeed(seed, options.normalize));
     out += `<clipPath id="${id}"><rect width="${V}" height="${V}" rx="${num(radius * V)}"/></clipPath>`;
     clipAttr = ` clip-path="url(#${id})"`;
   }

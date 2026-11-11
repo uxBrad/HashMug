@@ -1,6 +1,9 @@
 /** Tile shape drawn for each filled cell. */
 export type TileShape = "square" | "rounded" | "circle";
 
+/** How to canonicalize a seed before hashing. */
+export type SeedNormalize = "auto" | "ethereum" | "none";
+
 /** Visual style. "pixel" is the mirrored block grid, "face" is wavy hair plus eyes. */
 export type AvatarStyle = "pixel" | "face";
 
@@ -8,6 +11,8 @@ export type AvatarStyle = "pixel" | "face";
 export type HairStyle = "wave" | "slope" | "zigzag" | "scallop" | "straight";
 
 export interface AvatarOptions {
+  /** Seed canonicalization. Default "auto": Ethereum addresses are lowercased with 0x, other input is trimmed and NFC normalized. */
+  normalize?: SeedNormalize;
   /** Visual style. Default "pixel". */
   style?: AvatarStyle;
   /** Face style: draw a mouth. Default false. */

@@ -1,6 +1,5 @@
 import { contrast, ensureContrast, hslToRgb, rgbToHex, type RGB } from "./color";
-import { hashSeed } from "./hash";
-import { createRng } from "./prng";
+import { createSeedRng, normalizeSeed, seedId } from "./seed";
 import type { AvatarOptions, HairStyle } from "./types";
 
 const V = 100;
@@ -161,7 +160,8 @@ const lerp = (a: number, b: number, t: number) => a + (b - a) * t;
  * The order of PRNG draws is part of the output contract.
  */
 export function createFaceSvg(seed: string, options: AvatarOptions = {}): string {
-  const rng = createRng(hashSeed(seed));
+  const canonical = normalizeSeed(seed, options.normalize);
+  const rng = createSeedRng(canonical);
   const nx = () => rng.next();
   const rg = (lo: number, hi: number) => rng.range(lo, hi);
   const minContrast = options.minContrast ?? 3;
@@ -338,7 +338,7 @@ export function createFaceSvg(seed: string, options: AvatarOptions = {}): string
   });
 
   // Output.
-  const uid = hashSeed(seed).toString(36);
+  const uid = seedId(canonical);
   const bgMode = bgModeRoll < 0.5 ? "flat" : bgModeRoll < 0.8 ? "split" : "grad";
   let out = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${V} ${V}"`;
   out += options.size ? ` width="${options.size}" height="${options.size}"` : "";

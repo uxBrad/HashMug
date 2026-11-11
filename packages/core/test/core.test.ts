@@ -66,3 +66,31 @@ describe("face style", () => {
     }
   });
 });
+
+import { normalizeSeed, sha256, toHex } from "../src";
+
+describe("sha256 and normalization", () => {
+  const enc = (s: string) => Array.from(new TextEncoder().encode(s));
+  it("matches NIST vectors", () => {
+    expect(toHex(sha256([]))).toBe("e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855");
+    expect(toHex(sha256(enc("abc")))).toBe("ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad");
+    expect(toHex(sha256(enc("abcdbcdecdefdefgefghfghighijhijkijkljklmklmnlmnomnopnopq")))).toBe(
+      "248d6a61d20638b8e5c026930c3e6039a33ce45964ff2167f6ecedd419db06c1",
+    );
+  });
+  it("equivalent Ethereum address forms give the same avatar", () => {
+    const a = "0xAbCdEf0123456789aBcDeF0123456789AbCdEf01";
+    const b = "abcdef0123456789abcdef0123456789abcdef01";
+    expect(normalizeSeed(a)).toBe("0x" + b);
+    expect(createAvatar(a, { style: "face" })).toBe(createAvatar(b, { style: "face" }));
+    expect(createAvatar(a)).toBe(createAvatar(" " + b + " "));
+  });
+  it("usernames stay case sensitive", () => {
+    expect(createAvatar("Brad", { style: "face" })).not.toBe(createAvatar("brad", { style: "face" }));
+  });
+  it("one changed hex digit changes the avatar", () => {
+    const a = "0xabcdef0123456789abcdef0123456789abcdef01";
+    const b = "0xabcdef0123456789abcdef0123456789abcdef02";
+    expect(createAvatar(a, { style: "face" })).not.toBe(createAvatar(b, { style: "face" }));
+  });
+});
