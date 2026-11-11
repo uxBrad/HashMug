@@ -28,7 +28,10 @@ describe("edge app", () => {
   });
   it("rejects bad input", async () => {
     expect((await app.request(`/v1/avatar/x.svg?size=99999`)).status).toBe(400);
-    expect((await app.request(`/v1/avatar/x.svg?hair=evil`)).status).toBe(400);
+    expect((await app.request(`/v1/avatar/x.svg?radius=9`)).status).toBe(400);
+    // Trait overrides are not part of the API: ignored, never applied.
+    const base = await (await app.request(`/v1/avatar/x.svg`)).text();
+    expect(await (await app.request(`/v1/avatar/x.svg?hair=zigzag&mouth=true&rarity=false`)).text()).toBe(base);
     expect((await app.request(`/v1/avatar/${"a".repeat(500)}.svg`)).status).toBe(400);
   });
   it("returns 501 for PNG when no rasterizer is configured", async () => {

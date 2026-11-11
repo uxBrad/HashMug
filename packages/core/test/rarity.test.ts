@@ -1,5 +1,6 @@
 import { expect, it } from "vitest";
 import { createAvatar } from "../src";
+import { createFaceSvg } from "../src/internal";
 
 it("faces are highly varied", () => {
   const N = 2000;
@@ -22,7 +23,7 @@ it("faces are highly varied", () => {
 
 it("face features stay inside a round crop", () => {
   for (let i = 0; i < 1000; i++) {
-    const svg = createAvatar("crop" + i, { mouth: true, eyebrows: true }).replace(/<defs>.*?<\/defs>/, "");
+    const svg = createFaceSvg("crop" + i, { mouth: true, eyebrows: true }).replace(/<defs>.*?<\/defs>/, "");
     for (const m of svg.matchAll(/<circle cx="([\d.-]+)" cy="([\d.-]+)" r="([\d.]+)"/g)) {
       const d = Math.hypot(Number(m[1]) - 50, Number(m[2]) - 50) + Number(m[3]);
       expect(d).toBeLessThanOrEqual(47.5);

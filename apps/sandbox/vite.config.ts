@@ -1,8 +1,14 @@
 import { defineConfig } from "vite";
 import { fileURLToPath } from "node:url";
 
+const core = (f: string) => fileURLToPath(new URL(`../../packages/core/src/${f}`, import.meta.url));
+
 export default defineConfig({
   resolve: {
-    alias: { "@sigil/core": fileURLToPath(new URL("../../packages/core/src/index.ts", import.meta.url)) },
+    // Order matters: the more specific path first.
+    alias: [
+      { find: "@sigil/core/internal", replacement: core("internal.ts") },
+      { find: "@sigil/core", replacement: core("index.ts") },
+    ],
   },
 });

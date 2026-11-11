@@ -10,6 +10,7 @@
     "lib": ["ES2020", "DOM"],
     "paths": {
       "@sigil/core": ["./packages/core/src/index.ts"],
+      "@sigil/core/internal": ["./packages/core/src/internal.ts"],
       "@sigil/png": ["./packages/png/src/index.ts"]
     }
   }

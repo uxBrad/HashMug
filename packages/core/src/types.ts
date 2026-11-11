@@ -4,6 +4,11 @@ export type SeedNormalize = "auto" | "ethereum" | "none";
 /** Hair edge style. */
 export type HairStyle = "wave" | "slope" | "zigzag" | "scallop" | "straight";
 
+/**
+ * Public options. These never change which face a seed produces, except
+ * `normalize`, which only changes how the seed text is read. The same seed
+ * looks the same in every app.
+ */
 export interface AvatarOptions {
   /** Seed canonicalization. Default "auto": Ethereum addresses are lowercased with 0x, other input is trimmed and NFC normalized. */
   normalize?: SeedNormalize;
@@ -11,17 +16,21 @@ export interface AvatarOptions {
   size?: number;
   /** Background corner radius as fraction of size, 0 (square) to 0.5 (circle). Default 0. */
   radius?: number;
-  /** Minimum WCAG contrast of eyes and features against the background. Default 3 (non-text UI). */
+}
+
+/**
+ * Trait overrides. INTERNAL: for the sandbox, tests and tooling only.
+ * Using these makes a seed look different from the same seed elsewhere,
+ * which defeats recognition and the anti-spoofing goal. Import from
+ * "@sigil/core/internal".
+ */
+export interface FaceOverrides extends AvatarOptions {
+  /** Minimum WCAG contrast of eyes and features against the background. Default 3. */
   minContrast?: number;
-  /** Draw a mouth. Default: decided by the seed. */
   mouth?: boolean;
-  /** Draw pupils. Default true. */
   pupils?: boolean;
-  /** Draw eyebrows. Default: decided by the seed. */
   eyebrows?: boolean;
-  /** Hair edge style. Default: chosen by seed. */
   hair?: HairStyle;
-  /** Gradient on the top hair band. Default: chosen by seed. */
   gradient?: boolean;
   /** Allow rare variants (gold hair, cyclops, three eyes). Default true. */
   rarity?: boolean;

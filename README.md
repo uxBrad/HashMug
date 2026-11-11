@@ -41,9 +41,15 @@ const png = avatarPng("0xAbC...", { radius: 0.5 }, 256);
 <img src="https://your-host/v1/avatar/0xAbC....svg?radius=round" width="64" height="64" alt="">
 ```
 
-Endpoint: `GET /v1/avatar/{seed}.svg|.png` with query `style, size, radius, hair, gradient, pupils, eyebrows, mouth, rarity, tile, grid, padding, density`. Immutable cache headers. Cloudflare: `pnpm --filter @sigil/edge build` then `wrangler deploy` (SVG only). Node: `pnpm --filter @sigil/edge start` (SVG and PNG).
+Endpoint: `GET /v1/avatar/{seed}.svg|.png` with query `size` and `radius` only. Immutable cache headers. Cloudflare: `pnpm --filter @sigil/edge build` then `wrangler deploy` (SVG only). Node: `pnpm --filter @sigil/edge start` (SVG and PNG).
 
 The web component sets `role="img"` and a neutral `aria-label` (never the seed, since an address read aloud is noise). Use `label` to name it or `decorative` to hide it.
+
+## One seed, one face
+
+Options are deliberately minimal: `size`, `radius` (presentation) and `normalize` (how the seed text is read). Nothing lets an app change the face, so the same wallet looks the same in every product and nobody can quietly switch off the traits that make faces hard to fake. A different look means a new version (`/v2/`), not a per-app setting.
+
+Trait overrides exist for the sandbox and tests only, under `@sigil/core/internal`. Do not use them in products.
 
 ## How it works
 

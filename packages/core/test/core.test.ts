@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { createAvatar, createRng, describeFace, fnv1a, hashSeed, normalizeSeed, sha256, toHex } from "../src";
+import { createFaceSvg } from "../src/internal";
 
 describe("hash and prng", () => {
   it("fnv1a matches known vectors", () => {
@@ -20,9 +21,15 @@ describe("hash and prng", () => {
 
 describe("face avatar", () => {
   it("is deterministic and differs by seed", () => {
-    const o = { mouth: true };
-    expect(createAvatar("a", o)).toBe(createAvatar("a", o));
-    expect(createAvatar("a", o)).not.toBe(createAvatar("b", o));
+    expect(createAvatar("a")).toBe(createAvatar("a"));
+    expect(createAvatar("a")).not.toBe(createAvatar("b"));
+  });
+  it("public options cannot change the face, even if a JS caller passes overrides", () => {
+    const base = createAvatar("seed-1");
+    const sneaky = createAvatar("seed-1", { mouth: true, hair: "zigzag", rarity: false } as never);
+    expect(sneaky).toBe(base);
+    expect(createAvatar("seed-1", { radius: 0.5, size: 64 })).not.toBe(base); // presentation differs
+    expect(JSON.stringify(describeFace("seed-1", { radius: 0.5 }))).toBe(JSON.stringify(describeFace("seed-1")));
   });
   it("is valid SVG", () => {
     const svg = createAvatar("x", { radius: 0.5 });
@@ -31,7 +38,7 @@ describe("face avatar", () => {
   });
   it("eyes stay inside the canvas for 500 seeds", () => {
     for (let i = 0; i < 500; i++) {
-      const svg = createAvatar("f" + i, { mouth: true }).replace(/<defs>.*?<\/defs>/, "");
+      const svg = createFaceSvg("f" + i, { mouth: true }).replace(/<defs>.*?<\/defs>/, "");
       for (const m of svg.matchAll(/<circle cx="([\d.]+)" cy="([\d.]+)" r="([\d.]+)"/g)) {
         const [cx, cy, r] = [Number(m[1]), Number(m[2]), Number(m[3])];
         expect(cx - r).toBeGreaterThanOrEqual(0);

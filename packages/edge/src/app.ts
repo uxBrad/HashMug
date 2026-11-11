@@ -19,7 +19,7 @@ GET /v1/avatar/{seed}.svg
 GET /v1/avatar/{seed}.png   (when enabled)
 
 Query: size=16..1024  radius=0..0.5|round
-       hair=wave|slope|zigzag|scallop|straight  gradient pupils eyebrows mouth rarity=true|false
+The face itself is fixed by the seed. No option changes it.
 
 Example: <img src="/v1/avatar/0xabc....svg?radius=round" width="64" height="64" alt="">
 `;

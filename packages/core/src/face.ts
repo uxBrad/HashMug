@@ -1,6 +1,6 @@
 import { contrast, ensureContrast, hslToRgb, rgbToHex, type RGB } from "./color";
 import { createSeedRng, normalizeSeed, seedId } from "./seed";
-import type { AvatarOptions, HairStyle } from "./types";
+import type { FaceOverrides, HairStyle } from "./types";
 
 const V = 100;
 const STEPS = 12;
@@ -191,12 +191,12 @@ export interface FaceTraits {
 }
 
 /** Face avatar SVG for a seed. */
-export function createFaceSvg(seed: string, options: AvatarOptions = {}): string {
+export function createFaceSvg(seed: string, options: FaceOverrides = {}): string {
   return buildFace(seed, options).svg;
 }
 
 /** Traits of the face avatar for a seed (palette, eyes, hair, and so on). */
-export function describeFace(seed: string, options: AvatarOptions = {}): FaceTraits {
+export function describeFace(seed: string, options: FaceOverrides = {}): FaceTraits {
   return buildFace(seed, options).traits;
 }
 
@@ -211,7 +211,7 @@ const lerp = (a: number, b: number, t: number) => a + (b - a) * t;
  * Rare seeds: cyclops (2%), three eyes (3%), gold on dark (6%).
  * The order of PRNG draws is part of the output contract.
  */
-export function buildFace(seed: string, options: AvatarOptions = {}): { svg: string; traits: FaceTraits } {
+export function buildFace(seed: string, options: FaceOverrides = {}): { svg: string; traits: FaceTraits } {
   const canonical = normalizeSeed(seed, options.normalize);
   const rng = createSeedRng(canonical);
   const nx = () => rng.next();
