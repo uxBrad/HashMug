@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Sigil Sandbox</title>
+<style>
+  body{font:14px system-ui;margin:0;background:#fafafa;color:#111}
+  header{position:sticky;top:0;background:#fff;border-bottom:1px solid #ddd;padding:12px 16px;display:flex;flex-wrap:wrap;gap:16px;align-items:center;z-index:1}
+  label{display:flex;flex-direction:column;font-size:12px;gap:2px}
+  input,select,button{font:inherit;padding:4px}
+  #grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(var(--cell,96px),1fr));gap:12px;padding:16px}
+  .item{display:flex;flex-direction:column;align-items:center;gap:4px;font-size:10px;color:#555;overflow:hidden}
+  .item svg{width:100%;height:auto;display:block}
+</style>
+</head>
+<body>
+<header>
+  <label>Seed prefix <input id="prefix" value="user"></label>
+  <label>Count <input id="count" type="number" value="300" min="1" max="2000"></label>
+  <label>Grid <select id="gridsize"><option>5</option><option selected>8</option><option>10</option><option>12</option></select></label>
+  <label>Tile <select id="tile"><option>square</option><option>rounded</option><option>circle</option></select></label>
+  <label>Radius <input id="radius" type="range" min="0" max="0.5" step="0.05" value="0"></label>
+  <label>Padding <input id="padding" type="range" min="0" max="0.3" step="0.02" value="0.1"></label>
+  <label>Density <input id="density" type="range" min="0.2" max="0.8" step="0.05" value="0.5"></label>
+  <label>Tile size <input id="cell" type="range" min="48" max="200" step="8" value="96"></label>
+  <button id="shuffle">New seeds</button>
+</header>
+<div id="grid"></div>
+<script type="module" src="/src/main.ts"></script>
+</body>
+</html>

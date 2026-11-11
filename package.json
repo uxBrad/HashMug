@@ -1,0 +1,11 @@
+{
+  "name": "sigil-monorepo",
+  "private": true,
+  "packageManager": "pnpm@10.33.0",
+  "scripts": {
+    "dev": "pnpm --filter @sigil/sandbox dev",
+    "build": "pnpm --filter @sigil/core build",
+    "test": "pnpm --filter @sigil/core test",
+    "typecheck": "pnpm --filter @sigil/core typecheck"
+  }
+}
