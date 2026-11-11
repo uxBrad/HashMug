@@ -5,6 +5,7 @@ export { sha256, toHex } from "./sha256";
 export { normalizeSeed, createSeedRng } from "./seed";
 export { createRng } from "./prng";
 export { contrast, parseHex, hslToRgb, rgbToHex, luminance } from "./color";
-export { createFaceSvg } from "./face";
+export { createFaceSvg, describeFace } from "./face";
+export type { FaceTraits } from "./face";
 export type { SeedNormalize, HairStyle, AvatarStyle, AvatarOptions, AvatarModel, Cell, TileShape } from "./types";
 export type { Rng } from "./prng";

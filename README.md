@@ -29,3 +29,18 @@ apps/sandbox         Vite harness, hundreds of seeds with live controls
 ## Roadmap
 
 See `Brain/Projects/Sigil/Backlog.md`.
+
+## Wallet addresses: what the avatar does and does not do
+
+Seeds that look like Ethereum addresses are normalized (lowercase, `0x`), so EIP-55 case never changes the avatar. Randomness comes from SHA-256 over the whole address, and every trait is snapped to a few clearly different levels so one changed digit gives a visibly different face.
+
+The avatar is a second check for humans, never proof that an address is correct. Always verify the address itself.
+
+Measured with `node packages/core/scripts/grind.mjs` (200,000 random addresses, face style):
+
+| Match standard | Expected addresses to generate to match a random victim |
+|---|---|
+| Strict (every prominent trait equal) | about 6 x 10^8 (roughly 2^29) |
+| Loose (first-glance look: palette, hue, hair side, eyes, mouth) | about 2 x 10^4 |
+
+Read these honestly. A GPU can generate billions of addresses per second, so the avatar alone does not stop a determined attacker. Its value is that it multiplies the work on top of the usual "match the first and last characters" attack. Use it alongside, not instead of, address checks.

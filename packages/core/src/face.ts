@@ -148,6 +148,40 @@ function pull(x: number, y: number, pts: (x: number, y: number) => Pt[]): Pt {
   }
   return [x, y];
 }
+/** Discrete, human-visible traits of a face avatar. */
+export interface FaceTraits {
+  tier: string;
+  palette: string;
+  hue: number;
+  orientation: number;
+  tilt: number;
+  bands: number;
+  hairStyle: string;
+  mixedHair: boolean;
+  hairDepth: number;
+  gradient: boolean;
+  background: string;
+  eyeCount: number;
+  eyeShapes: string;
+  eyeSize: number;
+  eyeSpacing: number;
+  eyeHeight: number;
+  brows: number;
+  mood: number;
+  mouth: number;
+  nose: number;
+}
+
+/** Face avatar SVG for a seed. */
+export function createFaceSvg(seed: string, options: AvatarOptions = {}): string {
+  return buildFace(seed, options).svg;
+}
+
+/** Traits of the face avatar for a seed (palette, eyes, hair, and so on). */
+export function describeFace(seed: string, options: AvatarOptions = {}): FaceTraits {
+  return buildFace(seed, options).traits;
+}
+
 const EYE_SHAPES = [0, 0, 0, 1, 2, 3, 4, 5, 6, 7]; // circle weighted 3x
 const lerp = (a: number, b: number, t: number) => a + (b - a) * t;
 
@@ -159,11 +193,14 @@ const lerp = (a: number, b: number, t: number) => a + (b - a) * t;
  * Rare seeds: cyclops (2%), three eyes (3%), gold on dark (6%).
  * The order of PRNG draws is part of the output contract.
  */
-export function createFaceSvg(seed: string, options: AvatarOptions = {}): string {
+export function buildFace(seed: string, options: AvatarOptions = {}): { svg: string; traits: FaceTraits } {
   const canonical = normalizeSeed(seed, options.normalize);
   const rng = createSeedRng(canonical);
   const nx = () => rng.next();
-  const rg = (lo: number, hi: number) => rng.range(lo, hi);
+  /** Uniform pick of one of n evenly spaced levels in [0, 1]. */
+  const qn = (n: number) => Math.floor(nx() * n) / (n - 1);
+  /** n evenly spaced levels from lo to hi. */
+  const qg = (lo: number, hi: number, n: number) => lo + (hi - lo) * qn(n);
   const minContrast = options.minContrast ?? 3;
   const radius = clamp(options.radius ?? 0, 0, 0.5);
   const showPupils = options.pupils ?? true;
@@ -172,65 +209,67 @@ export function createFaceSvg(seed: string, options: AvatarOptions = {}): string
   // Every random value is drawn here, unconditionally, in this order.
   const rarityRoll = nx();
   const modeRoll = nx();
-  const hue0 = rg(0, 360);
-  const off2 = rg(40, 200);
-  const off3 = rg(40, 200);
-  const earthV = nx();
+  // Every continuous trait is snapped to a few levels so that one different
+  // hash bit gives a clearly different face, not a near-identical one.
+  const hue0 = qg(0, 330, 12);
+  const off2 = qg(60, 180, 3);
+  const off3 = qg(60, 180, 3);
+  const earthV = qn(4);
   const bgModeRoll = nx();
-  const bgAngle = rg(0, 360);
-  const bgOff = rg(-18, 18);
+  const bgAngle = qg(0, 315, 8);
+  const bgOff = qg(-18, 18, 3);
   const orientRoll = nx();
-  const tiltDeg = rg(-12, 12);
+  const tiltDeg = qg(-12, 12, 3);
   const bandRoll = nx();
-  const baseRoll = nx();
+  const baseRoll = qn(5);
   const h: HairParams = {
-    f1: rg(0.06, 0.2),
+    f1: qg(0.06, 0.2, 3),
     f2: 0,
-    a1: rg(1.5, 9),
-    a2: rg(0.3, 4),
-    p1: rg(0, 6.28),
-    p2: rg(0, 6.28),
-    tilt: rg(-14, 14),
-    zig: Math.round(rg(4, 12)),
-    zigAmp: rg(2, 6),
-    bump: rg(2.5, 7),
-    scal: Math.round(rg(3, 9)),
+    a1: qg(1.5, 9, 3),
+    a2: qg(0.3, 4, 2),
+    p1: qg(0, 4.71, 4),
+    p2: qg(0, 4.71, 4),
+    tilt: qg(-14, 14, 3),
+    zig: Math.round(qg(4, 12, 3)),
+    zigAmp: qg(2, 6, 3),
+    bump: qg(2.5, 7, 3),
+    scal: Math.round(qg(3, 9, 3)),
   };
-  h.f2 = h.f1 * rg(1.8, 2.8);
-  const bandGaps = [rg(3, 14), rg(3, 14), rg(3, 14), rg(3, 14)];
+  h.f2 = h.f1 * qg(1.8, 2.8, 2);
+  const bandGaps = [qg(3, 14, 3), qg(3, 14, 3), qg(3, 14, 3), qg(3, 14, 3)];
   const bandStyleMix = nx();
   const bandStyles = [nx(), nx(), nx(), nx()];
   const gradRoll = nx();
   const eyeShapeSame = nx();
-  const eyeSizeBase = rg(7, 15);
-  const eyePitch = rg(14, 62);
-  const eyeCx = rg(-8, 8);
-  const eyeFrac = nx();
+  const eyeSizeBase = qg(7, 15, 3);
+  const eyePitch = qg(14, 62, 4);
+  const eyeCx = qg(-8, 8, 3);
+  const eyeFrac = qn(3);
   const eyeRaw = [0, 1, 2, 3].map(() => ({
-    size: rg(0.65, 1.3),
+    size: qg(0.65, 1.3, 3),
     shape: nx(),
-    tilt: rg(-25, 25),
+    tilt: qg(-25, 25, 3),
     color: nx(),
-    jy: rg(-4, 4),
-    ratio: rg(0.55, 1),
+    jy: qg(-4, 4, 3),
+    ratio: qn(2),
   }));
-  const pupilScale = rg(0.35, 0.6);
-  const lookAngle = rg(0, 6.28);
-  const lookAmt = rg(0, 0.4);
+  const pupilScale = qg(0.35, 0.6, 2);
+  const lookAngle = qg(0, 5.5, 8);
+  const lookAmt = qg(0, 0.4, 3);
   const browRoll = nx();
   const browStyle = nx();
-  const mood = rg(-1, 1);
-  const lift1 = rg(0, 3);
-  const lift2 = rg(0, 3);
+  const mood = qg(-1, 1, 3);
+  const lift1 = qg(0, 3, 2);
+  const lift2 = qg(0, 3, 2);
   const mouthRoll = nx();
   const mouthKind = nx();
-  const mouthW = rg(5, 18);
-  const mouthGap = rg(5, 12);
-  const mouthStroke = rg(2, 4);
-  const mouthOff = rg(-6, 6);
+  const mouthW = qg(5, 18, 3);
+  const mouthGap = qg(5, 12, 2);
+  const mouthStroke = qg(2, 4, 2);
+  const mouthOff = qg(-6, 6, 3);
   const noseRoll = nx();
   const noseKind = nx();
-  const pastelV = Array.from({ length: 10 }, () => nx());
+  const pastelV = Array.from({ length: 10 }, () => qn(3));
 
   // Rarity.
   const tier = !useRarity ? "common" : rarityRoll < 0.02 ? "cyclops" : rarityRoll < 0.05 ? "three" : rarityRoll < 0.11 ? "gold" : "common";
@@ -359,6 +398,7 @@ export function createFaceSvg(seed: string, options: AvatarOptions = {}): string
     out += `<rect x="-60" y="${num(50 + bgOff)}" width="220" height="160" fill="${hex(bg2)}" transform="rotate(${num(bgAngle)} 50 50)"/>`;
   }
 
+  const orient = (rot / 90) % 4;
   rot += tilted;
   out += `<g transform="rotate(${num(rot)} 50 50)">`;
   for (let i = bands.length - 1; i >= 0; i--) {
@@ -446,5 +486,27 @@ export function createFaceSvg(seed: string, options: AvatarOptions = {}): string
       out += `<path d="${d}" fill="none" stroke="${inkHex}" stroke-width="${sw}" stroke-linecap="round" stroke-linejoin="round"/>`;
     } else out += `<circle cx="${num(midX)}" cy="${num(my)}" r="1.8" fill="${inkHex}"/>`;
   }
-  return out + `</g></svg>`;
+  const traits: FaceTraits = {
+    tier,
+    palette: mode,
+    hue: Math.round(hue0 / 30) % 12,
+    orientation: orient,
+    tilt: Math.sign(tilted),
+    bands: bandCount,
+    hairStyle: mainStyle,
+    mixedHair: mixStyles && !options.hair,
+    hairDepth: Math.round(baseRoll * 4),
+    gradient,
+    background: bgMode,
+    eyeCount,
+    eyeShapes: specs.map((sp) => sp.shape).join(""),
+    eyeSize: Math.round(((eyeSizeBase - 7) / 8) * 2),
+    eyeSpacing: Math.round(((eyePitch - 14) / 48) * 3),
+    eyeHeight: Math.round(eyeFrac * 2),
+    brows: brows ? (browStyle < 0.35 ? 0 : browStyle < 0.7 ? 1 : browStyle < 0.85 ? 2 : 3) : -1,
+    mood: Math.round(mood),
+    mouth: mouthOn ? Math.floor(mouthKind * 7) : -1,
+    nose: noseOn ? (noseKind < 0.5 ? 0 : 1) : -1,
+  };
+  return { svg: out + `</g></svg>`, traits };
 }

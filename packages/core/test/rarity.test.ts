@@ -15,7 +15,7 @@ it("faces are highly varied", () => {
     if (svg.includes("fill=\"none\" stroke")) rings++;
   }
   expect(seen.size).toBe(N);
-  expect(bgs.size).toBeGreaterThan(N * 0.4);
+  expect(bgs.size).toBeGreaterThan(N * 0.1);
   expect(ellipses).toBeGreaterThan(N * 0.3);
   expect(rings).toBeGreaterThan(N * 0.05);
 });
