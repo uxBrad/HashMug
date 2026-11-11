@@ -170,6 +170,24 @@ export interface FaceTraits {
   mood: number;
   mouth: number;
   nose: number;
+  noseSize: number;
+  hairPattern: number;
+  hairPatternSize: number;
+  bgPattern: number;
+  bgPatternSize: number;
+  glint: number;
+  pupilShape: number;
+  pupilSize: number;
+  lookDir: number;
+  outline: boolean;
+  eyeExtra: number;
+  eyeColors: string;
+  eyeTilt: number;
+  browAccent: boolean;
+  mouthAccent: boolean;
+  liftAsym: boolean;
+  bandGap: number;
+  edgeLevel: number;
 }
 
 /** Face avatar SVG for a seed. */
@@ -270,6 +288,17 @@ export function buildFace(seed: string, options: AvatarOptions = {}): { svg: str
   const noseRoll = nx();
   const noseKind = nx();
   const pastelV = Array.from({ length: 10 }, () => qn(3));
+  const hairPatRoll = nx();
+  const hairPatSize = qn(2);
+  const bgPatRoll = nx();
+  const bgPatSize = qn(2);
+  const glintRoll = nx();
+  const pupilShapeRoll = nx();
+  const outlineRoll = nx();
+  const eyeExtraRoll = nx();
+  const noseSize = qn(2);
+  const mouthColorRoll = nx();
+  const browColorRoll = nx();
 
   // Rarity.
   const tier = !useRarity ? "common" : rarityRoll < 0.02 ? "cyclops" : rarityRoll < 0.05 ? "three" : rarityRoll < 0.11 ? "gold" : "common";
@@ -324,6 +353,14 @@ export function buildFace(seed: string, options: AvatarOptions = {}): { svg: str
   const brows = options.eyebrows ?? browRoll < 0.6;
   const mouthOn = options.mouth ?? mouthRoll < 0.75;
   const noseOn = noseRoll < 0.4;
+  // 0 none, 1 stripes, 2 dots, 3 chevrons, 4 speckle
+  const hairPat = hairPatRoll < 0.35 ? 0 : hairPatRoll < 0.5 ? 1 : hairPatRoll < 0.65 ? 2 : hairPatRoll < 0.8 ? 3 : 4;
+  // 0 none, 1 dots, 2 grid, 3 diagonal stripes, 4 rings
+  const bgPat = bgPatRoll < 0.4 ? 0 : bgPatRoll < 0.55 ? 1 : bgPatRoll < 0.7 ? 2 : bgPatRoll < 0.85 ? 3 : 4;
+  const glint = glintRoll < 0.4 ? 0 : glintRoll < 0.7 ? 1 : 2;
+  const pupilShape = pupilShapeRoll < 0.6 ? 0 : pupilShapeRoll < 0.8 ? 1 : 2;
+  const outline = outlineRoll < 0.3;
+  const eyeExtra = eyeExtraRoll < 0.55 ? 0 : eyeExtraRoll < 0.8 ? 1 : 2; // none, lashes, bags
 
   // Eyes. Build, then scale to fit the free rectangle.
   interface EyeSpec {
@@ -372,8 +409,9 @@ export function buildFace(seed: string, options: AvatarOptions = {}): { svg: str
     const ext = Math.max(s.rx, s.ry);
     s.x = clamp(cx + (k - (eyeCount - 1) / 2) * pitch, fx0 + 5 + ext, fx1 - 5 - ext);
     s.y = clamp(cy + e.jy * scale + (eyeCount === 3 && k === 1 ? -rowH2 * 0.6 : 0), fy0 + browSpace + ext * 0.5, fy1 - 5 - ext);
-    const up = brows ? ext + 11 : ext;
-    [s.x, s.y] = pull(s.x, s.y, (x, y) => [[x - ext, y], [x + ext, y], [x, y + ext], [x, y - up], [x - ext * 0.8, y - up], [x + ext * 0.8, y - up]]);
+    const up = brows ? ext + 11 : eyeExtra === 1 ? ext + 5 : ext;
+    const down = eyeExtra === 2 ? ext * 1.75 : ext;
+    [s.x, s.y] = pull(s.x, s.y, (x, y) => [[x - ext, y], [x + ext, y], [x, y + down], [x, y - up], [x - ext * 0.8, y - up], [x + ext * 0.8, y - up]]);
   });
 
   // Output.
@@ -392,10 +430,36 @@ export function buildFace(seed: string, options: AvatarOptions = {}): { svg: str
     const alt = rgbOf([topHsl[0] + 40, topHsl[1], topHsl[2] + 8]);
     defs += `<linearGradient id="g${uid}" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="0" y2="${num(base + 8)}"><stop offset="0" stop-color="${hex(alt)}"/><stop offset="1" stop-color="${hex(top)}"/></linearGradient>`;
   }
+  const hpS = 6 + hairPatSize * 5;
+  const hpC = hex(hairColors[3] as RGB);
+  const hpInner = [
+    "",
+    `<rect width="${hpS}" height="${num(hpS * 0.3)}" fill="${hpC}"/>`,
+    `<circle cx="${num(hpS / 2)}" cy="${num(hpS / 2)}" r="${num(hpS * 0.18)}" fill="${hpC}"/>`,
+    `<path d="M0 ${num(hpS * 0.75)}L${num(hpS / 2)} ${num(hpS * 0.3)}L${hpS} ${num(hpS * 0.75)}" fill="none" stroke="${hpC}" stroke-width="1.2"/>`,
+    `<circle cx="${num(hpS * 0.2)}" cy="${num(hpS * 0.3)}" r="${num(hpS * 0.09)}" fill="${hpC}"/><circle cx="${num(hpS * 0.7)}" cy="${num(hpS * 0.2)}" r="${num(hpS * 0.09)}" fill="${hpC}"/><circle cx="${num(hpS * 0.5)}" cy="${num(hpS * 0.8)}" r="${num(hpS * 0.09)}" fill="${hpC}"/>`,
+  ][hairPat] as string;
+  if (hairPat) defs += `<pattern id="h${uid}" width="${hpS}" height="${hpS}" patternUnits="userSpaceOnUse"${hairPat === 1 ? ` patternTransform="rotate(35)"` : ""}>${hpInner}</pattern>`;
+  const bpS = 7 + bgPatSize * 5;
+  const bpInk = hex(ink);
+  const bpInner = [
+    "",
+    `<circle cx="${num(bpS / 2)}" cy="${num(bpS / 2)}" r="${num(bpS * 0.14)}" fill="${bpInk}"/>`,
+    `<path d="M0 0H${bpS}M0 0V${bpS}" stroke="${bpInk}" stroke-width="0.6" fill="none"/>`,
+    `<rect width="${bpS}" height="${num(bpS * 0.3)}" fill="${bpInk}"/>`,
+  ][bgPat] as string;
+  if (bgPat >= 1 && bgPat <= 3) defs += `<pattern id="p${uid}" width="${bpS}" height="${bpS}" patternUnits="userSpaceOnUse"${bgPat === 3 ? ` patternTransform="rotate(45)"` : ""}>${bpInner}</pattern>`;
   out += `<defs>${defs}</defs><g clip-path="url(#c${uid})">`;
   out += `<rect width="${V}" height="${V}" fill="${bgMode === "grad" ? `url(#b${uid})` : hex(bg)}"/>`;
   if (bgMode === "split") {
     out += `<rect x="-60" y="${num(50 + bgOff)}" width="220" height="160" fill="${hex(bg2)}" transform="rotate(${num(bgAngle)} 50 50)"/>`;
+  }
+  if (bgPat >= 1 && bgPat <= 3) out += `<rect width="${V}" height="${V}" fill="url(#p${uid})" opacity=".14"/>`;
+  else if (bgPat === 4) {
+    const gap = 9 + bgPatSize * 5;
+    out += `<g fill="none" stroke="${bpInk}" stroke-width="1.2" opacity=".14">`;
+    for (let rr = gap; rr < 46; rr += gap) out += `<circle cx="50" cy="50" r="${rr}"/>`;
+    out += `</g>`;
   }
 
   const orient = (rot / 90) % 4;
@@ -404,9 +468,11 @@ export function buildFace(seed: string, options: AvatarOptions = {}): { svg: str
   for (let i = bands.length - 1; i >= 0; i--) {
     const fill = i === 0 && gradient ? `url(#g${uid})` : hex((bands[i] as { color: RGB }).color);
     out += `<path fill="${fill}" d="${(bands[i] as { d: string }).d}"/>`;
+    if (i === 0 && hairPat) out += `<path fill="url(#h${uid})" opacity=".55" d="${(bands[0] as { d: string }).d}"/>`;
   }
   out += `</g>`;
 
+  const inkHex = hex(ink);
   const dark: RGB = [20, 20, 24];
   const light: RGB = [250, 250, 250];
   const lookX = Math.cos(lookAngle) * lookAmt;
@@ -415,10 +481,11 @@ export function buildFace(seed: string, options: AvatarOptions = {}): { svg: str
     const col = hex(s.color);
     const t = s.tilt ? ` transform="rotate(${num(s.tilt)} ${num(s.x)} ${num(s.y)})"` : "";
     const r = Math.max(s.rx, s.ry);
+    const oln = outline ? ` stroke="${inkHex}" stroke-width="1.4"` : "";
     if (s.shape === 0 || s.shape === 1 || s.shape === 2 || s.shape === 6) {
-      out += `<ellipse cx="${num(s.x)}" cy="${num(s.y)}" rx="${num(s.rx)}" ry="${num(s.ry)}" fill="${col}"${t}/>`;
+      out += `<ellipse cx="${num(s.x)}" cy="${num(s.y)}" rx="${num(s.rx)}" ry="${num(s.ry)}" fill="${col}"${s.shape === 6 ? "" : oln}${t}/>`;
     } else if (s.shape === 3) {
-      out += `<rect x="${num(s.x - r)}" y="${num(s.y - r)}" width="${num(2 * r)}" height="${num(2 * r)}" rx="${num(r * 0.35)}" fill="${col}"${t}/>`;
+      out += `<rect x="${num(s.x - r)}" y="${num(s.y - r)}" width="${num(2 * r)}" height="${num(2 * r)}" rx="${num(r * 0.35)}" fill="${col}"${oln}${t}/>`;
     } else if (s.shape === 4) {
       out += `<path d="M${num(s.x - r)} ${num(s.y - r * 0.3)}A${num(r)} ${num(r)} 0 0 0 ${num(s.x + r)} ${num(s.y - r * 0.3)}Z" fill="${col}"${t}/>`;
     } else if (s.shape === 5) {
@@ -429,18 +496,35 @@ export function buildFace(seed: string, options: AvatarOptions = {}): { svg: str
     if (showPupils && (s.shape <= 3 || s.shape === 5)) {
       const re = Math.min(s.rx, s.ry);
       const pc = contrast(s.color, dark) > contrast(s.color, light) ? dark : light;
-      out += `<circle cx="${num(s.x + lookX * re)}" cy="${num(s.y + lookY * re)}" r="${num(re * pupilScale)}" fill="${hex(pc)}"/>`;
+      const px = s.x + lookX * re;
+      const py = s.y + lookY * re;
+      const pr = re * pupilScale;
+      if (pupilShape === 0) out += `<circle cx="${num(px)}" cy="${num(py)}" r="${num(pr)}" fill="${hex(pc)}"/>`;
+      else if (pupilShape === 1) out += `<ellipse cx="${num(px)}" cy="${num(py)}" rx="${num(pr * 0.4)}" ry="${num(pr * 1.5)}" fill="${hex(pc)}"/>`;
+      else out += `<rect x="${num(px - pr * 0.9)}" y="${num(py - pr * 0.9)}" width="${num(pr * 1.8)}" height="${num(pr * 1.8)}" rx="${num(pr * 0.25)}" fill="${hex(pc)}"/>`;
+      if (glint) out += `<circle cx="${num(s.x + (glint === 1 ? -0.4 : 0.4) * re)}" cy="${num(s.y - 0.4 * re)}" r="${num(re * 0.2)}" fill="#fff" opacity=".9"/>`;
+    }
+    if (eyeExtra === 1) {
+      let d = "";
+      for (const a of [-125, -90, -55]) {
+        const c = Math.cos((a * Math.PI) / 180);
+        const sn = Math.sin((a * Math.PI) / 180);
+        d += `M${num(s.x + (r + 0.5) * c)} ${num(s.y + (r + 0.5) * sn)}L${num(s.x + (r + 4.5) * c)} ${num(s.y + (r + 4.5) * sn)}`;
+      }
+      out += `<path d="${d}" stroke="${inkHex}" stroke-width="1.5" stroke-linecap="round" fill="none"/>`;
+    } else if (eyeExtra === 2) {
+      out += `<path d="M${num(s.x - r * 0.7)} ${num(s.y + r * 1.15)}Q${num(s.x)} ${num(s.y + r * 1.7)} ${num(s.x + r * 0.7)} ${num(s.y + r * 1.15)}" stroke="${inkHex}" stroke-width="1.4" stroke-linecap="round" fill="none" opacity=".8"/>`;
     }
   }
 
-  const inkHex = hex(ink);
+  const browHex = browColorRoll < 0.4 ? hex(eyeColors[0] as RGB) : inkHex;
   if (brows) {
     const sw = browStyle < 0.35 ? 2.4 : browStyle < 0.7 ? 4 : 1.6;
     if (browStyle > 0.85 && eyeCount === 2) {
       const a = specs[0] as EyeSpec;
       const b = specs[1] as EyeSpec;
       const y = Math.min(a.y - Math.max(a.rx, a.ry), b.y - Math.max(b.rx, b.ry)) - 5;
-      out += `<path d="M${num(a.x - a.rx)} ${num(y)}L${num(b.x + b.rx)} ${num(y)}" stroke="${inkHex}" stroke-width="4.5" stroke-linecap="round"/>`;
+      out += `<path d="M${num(a.x - a.rx)} ${num(y)}L${num(b.x + b.rx)} ${num(y)}" stroke="${browHex}" stroke-width="4.5" stroke-linecap="round"/>`;
     } else {
       specs.forEach((s, idx) => {
         const side = eyeCount === 1 ? 0 : idx === 0 ? -1 : idx === eyeCount - 1 ? 1 : 0;
@@ -451,41 +535,60 @@ export function buildFace(seed: string, options: AvatarOptions = {}): { svg: str
         const yl = side === 1 ? bY + tt : bY - tt;
         const yr = side === 1 ? bY - tt : bY + tt;
         if (browStyle > 0.7 && browStyle <= 0.85) {
-          out += `<path d="M${num(s.x - half)} ${num(yl)}Q${num(s.x)} ${num(bY - 5)} ${num(s.x + half)} ${num(yr)}" fill="none" stroke="${inkHex}" stroke-width="2.2" stroke-linecap="round"/>`;
+          out += `<path d="M${num(s.x - half)} ${num(yl)}Q${num(s.x)} ${num(bY - 5)} ${num(s.x + half)} ${num(yr)}" fill="none" stroke="${browHex}" stroke-width="2.2" stroke-linecap="round"/>`;
         } else {
-          out += `<path d="M${num(s.x - half)} ${num(yl)}L${num(s.x + half)} ${num(yr)}" stroke="${inkHex}" stroke-width="${sw}" stroke-linecap="round"/>`;
+          out += `<path d="M${num(s.x - half)} ${num(yl)}L${num(s.x + half)} ${num(yr)}" stroke="${browHex}" stroke-width="${sw}" stroke-linecap="round"/>`;
         }
       });
     }
   }
 
-  const lowest = Math.max(...specs.map((s) => s.y + Math.max(s.rx, s.ry)));
+  const lowest = Math.max(...specs.map((s) => s.y + Math.max(s.rx, s.ry) * (eyeExtra === 2 ? 1.75 : 1)));
   let midX = clamp(specs.reduce((a, s) => a + s.x, 0) / specs.length + mouthOff, fx0 + 10, fx1 - 10);
   let nextY = lowest + 5;
   if (noseOn && nextY < fy1 - 10) {
     [midX, nextY] = pull(midX, nextY, (x, y) => [[x - 4, y - 3], [x + 4, y + 5]]);
-    if (noseKind < 0.5) out += `<circle cx="${num(midX)}" cy="${num(nextY + 1)}" r="2" fill="${inkHex}"/>`;
-    else out += `<path d="M${num(midX - 1)} ${num(nextY - 2)}V${num(nextY + 4)}H${num(midX + 4)}" fill="none" stroke="${inkHex}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>`;
+    const nk = Math.floor(noseKind * 4);
+    const ns = noseSize ? 1.4 : 1;
+    const nst = `fill="none" stroke="${inkHex}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"`;
+    if (nk === 0) out += `<circle cx="${num(midX)}" cy="${num(nextY + 1)}" r="${num(2 * ns)}" fill="${inkHex}"/>`;
+    else if (nk === 1) out += `<path d="M${num(midX - 1)} ${num(nextY - 2)}V${num(nextY + 4 * ns)}H${num(midX + 4 * ns)}" ${nst}/>`;
+    else if (nk === 2) out += `<path d="M${num(midX - 3 * ns)} ${num(nextY + 3)}L${num(midX)} ${num(nextY - 3)}L${num(midX + 3 * ns)} ${num(nextY + 3)}Z" ${nst}/>`;
+    else out += `<path d="M${num(midX)} ${num(nextY - 3)}V${num(nextY + 4 * ns)}" ${nst}/>`;
     nextY += 7;
   }
   if (mouthOn) {
     const w = Math.min(mouthW, (fx1 - fx0) / 2 - 6);
-    const kind = Math.floor(mouthKind * 7);
-    const reach = [w * 0.45, w * 0.1, 0, w / 2.4, w, 4, 2][kind] as number;
+    const kind = Math.floor(mouthKind * 10);
+    const mouthHex = mouthColorRoll < 0.4 ? hex(eyeColors[1] as RGB) : inkHex;
+    const reach = [w * 0.45, w * 0.1, 0, w / 2.4, w, 4, 2, w * 0.5, w * 0.9, 4][kind] as number;
     let my = clamp(nextY + mouthGap * 0.6, 0, fy1 - 3 - reach);
     [midX, my] = pull(midX, my, (x, y) => [[x - w, y], [x + w, y], [x, y + reach]]);
     const sw = num(mouthStroke);
-    if (kind === 0) out += `<path d="M${num(midX - w)} ${num(my)}Q${num(midX)} ${num(my + w * 0.9)} ${num(midX + w)} ${num(my)}" fill="none" stroke="${inkHex}" stroke-width="${sw}" stroke-linecap="round"/>`;
-    else if (kind === 1) out += `<path d="M${num(midX - w)} ${num(my + w * 0.4)}Q${num(midX)} ${num(my - w * 0.5)} ${num(midX + w)} ${num(my + w * 0.4)}" fill="none" stroke="${inkHex}" stroke-width="${sw}" stroke-linecap="round"/>`;
-    else if (kind === 2) out += `<path d="M${num(midX - w)} ${num(my)}H${num(midX + w)}" stroke="${inkHex}" stroke-width="${sw}" stroke-linecap="round"/>`;
-    else if (kind === 3) out += `<circle cx="${num(midX)}" cy="${num(my)}" r="${num(w / 2.4)}" fill="${inkHex}"/>`;
-    else if (kind === 4) out += `<path d="M${num(midX - w)} ${num(my)}A${num(w)} ${num(w)} 0 0 0 ${num(midX + w)} ${num(my)}Z" fill="${inkHex}"/>`;
+    if (kind === 0) out += `<path d="M${num(midX - w)} ${num(my)}Q${num(midX)} ${num(my + w * 0.9)} ${num(midX + w)} ${num(my)}" fill="none" stroke="${mouthHex}" stroke-width="${sw}" stroke-linecap="round"/>`;
+    else if (kind === 1) out += `<path d="M${num(midX - w)} ${num(my + w * 0.4)}Q${num(midX)} ${num(my - w * 0.5)} ${num(midX + w)} ${num(my + w * 0.4)}" fill="none" stroke="${mouthHex}" stroke-width="${sw}" stroke-linecap="round"/>`;
+    else if (kind === 2) out += `<path d="M${num(midX - w)} ${num(my)}H${num(midX + w)}" stroke="${mouthHex}" stroke-width="${sw}" stroke-linecap="round"/>`;
+    else if (kind === 3) out += `<circle cx="${num(midX)}" cy="${num(my)}" r="${num(w / 2.4)}" fill="${mouthHex}"/>`;
+    else if (kind === 4) out += `<path d="M${num(midX - w)} ${num(my)}A${num(w)} ${num(w)} 0 0 0 ${num(midX + w)} ${num(my)}Z" fill="${mouthHex}"/>`;
     else if (kind === 5) {
       let d = `M${num(midX - w)} ${num(my)}`;
       for (let k = 1; k <= 4; k++) d += `L${num(midX - w + (w * 2 * k) / 4)} ${num(my + (k % 2 ? 4 : 0))}`;
-      out += `<path d="${d}" fill="none" stroke="${inkHex}" stroke-width="${sw}" stroke-linecap="round" stroke-linejoin="round"/>`;
-    } else out += `<circle cx="${num(midX)}" cy="${num(my)}" r="1.8" fill="${inkHex}"/>`;
+      out += `<path d="${d}" fill="none" stroke="${mouthHex}" stroke-width="${sw}" stroke-linecap="round" stroke-linejoin="round"/>`;
+    } else if (kind === 6) out += `<circle cx="${num(midX)}" cy="${num(my)}" r="1.8" fill="${mouthHex}"/>`;
+    else if (kind === 7) out += `<path d="M${num(midX - w)} ${num(my + 2)}Q${num(midX + w * 0.2)} ${num(my + w * 0.9)} ${num(midX + w)} ${num(my - w * 0.3)}" fill="none" stroke="${mouthHex}" stroke-width="${sw}" stroke-linecap="round"/>`;
+    else if (kind === 8) {
+      out += `<circle cx="${num(midX)}" cy="${num(my + w * 0.55)}" r="${num(w * 0.28)}" fill="${hex(hairColors[2] as RGB)}"/>`;
+      out += `<path d="M${num(midX - w)} ${num(my)}Q${num(midX)} ${num(my + w * 0.9)} ${num(midX + w)} ${num(my)}" fill="none" stroke="${mouthHex}" stroke-width="${sw}" stroke-linecap="round"/>`;
+    } else out += `<path d="M${num(midX - w)} ${num(my)}Q${num(midX - w / 2)} ${num(my - 4)} ${num(midX)} ${num(my)}T${num(midX + w)} ${num(my)}" fill="none" stroke="${mouthHex}" stroke-width="${sw}" stroke-linecap="round"/>`;
   }
+  const edgeLevel =
+    mainStyle === "wave" || mainStyle === "slope"
+      ? Math.round(((h.a1 - 1.5) / 7.5) * 2) * 3 + Math.round(((h.f1 - 0.06) / 0.14) * 2)
+      : mainStyle === "zigzag"
+        ? Math.round(((h.zig - 4) / 8) * 2)
+        : mainStyle === "scallop"
+          ? Math.round(((h.scal - 3) / 6) * 2)
+          : Math.round(((h.tilt + 14) / 28) * 2);
   const traits: FaceTraits = {
     tier,
     palette: mode,
@@ -505,8 +608,26 @@ export function buildFace(seed: string, options: AvatarOptions = {}): { svg: str
     eyeHeight: Math.round(eyeFrac * 2),
     brows: brows ? (browStyle < 0.35 ? 0 : browStyle < 0.7 ? 1 : browStyle < 0.85 ? 2 : 3) : -1,
     mood: Math.round(mood),
-    mouth: mouthOn ? Math.floor(mouthKind * 7) : -1,
-    nose: noseOn ? (noseKind < 0.5 ? 0 : 1) : -1,
+    mouth: mouthOn ? Math.floor(mouthKind * 10) : -1,
+    nose: noseOn ? Math.floor(noseKind * 4) : -1,
+    noseSize: noseOn ? noseSize : -1,
+    hairPattern: hairPat,
+    hairPatternSize: hairPat ? hairPatSize : -1,
+    bgPattern: bgPat,
+    bgPatternSize: bgPat ? bgPatSize : -1,
+    glint,
+    pupilShape,
+    pupilSize: pupilScale > 0.5 ? 1 : 0,
+    lookDir: lookAmt === 0 ? -1 : Math.round(lookAngle / (5.5 / 7)),
+    outline,
+    eyeExtra,
+    eyeColors: specs.map((_, k) => ((eyeRaw[k] as { color: number }).color < 0.5 ? 0 : 1)).join(""),
+    eyeTilt: (specs[0] as EyeSpec).shape === 0 ? -1 : Math.round(((eyeRaw[0] as { tilt: number }).tilt + 25) / 25),
+    browAccent: browColorRoll < 0.4,
+    mouthAccent: mouthColorRoll < 0.4,
+    liftAsym: lift1 !== lift2,
+    bandGap: Math.round(((bandGaps[0] as number) - 3) / 5.5),
+    edgeLevel,
   };
   return { svg: out + `</g></svg>`, traits };
 }
