@@ -9,22 +9,49 @@ const svg = createAvatar("brad@example.com");
 const small = createAvatar("0xabc...", { grid: 5, tile: "rounded", radius: 0.5, size: 64 });
 ```
 
-## Layout
+## Packages
 
 ```
-packages/core        @sigil/core: hash (FNV-1a + mixer), PRNG (Mulberry32), color/contrast, SVG renderer
-packages/web-component   (planned) <identicon-avatar>
-packages/edge            (planned) Hono / Cloudflare Worker: GET /avatar/:seed.svg
-apps/sandbox         Vite harness, hundreds of seeds with live controls
+packages/core            @sigil/core: zero-dependency engine. SHA-256 seeding, face and pixel styles, SVG out
+packages/web-component   @sigil/web-component: <identicon-avatar>, works in any framework
+packages/png             @sigil/png: PNG bytes and raw RGBA pixels (Node, uses resvg)
+packages/edge            @sigil/edge: Hono endpoint. Worker (SVG) and Node (SVG + PNG)
+apps/sandbox             Vite harness, hundreds of seeds with live controls
 ```
+
+## Use it
+
+```ts
+import { createAvatar, describeFace } from "@sigil/core";
+const svg = createAvatar("0xAbC...", { radius: 0.5 });   // face style by default
+const traits = describeFace("0xAbC...");                  // palette, eyes, hair, and so on
+```
+
+```html
+<script type="module" src="@sigil/web-component"></script>
+<identicon-avatar seed="0xAbC..." size="64" radius="round" label="Profile picture"></identicon-avatar>
+```
+
+```ts
+import { avatarPng, avatarPixels } from "@sigil/png";    // Node
+const png = avatarPng("0xAbC...", { radius: 0.5 }, 256);
+```
+
+```html
+<img src="https://your-host/v1/avatar/0xAbC....svg?radius=round" width="64" height="64" alt="">
+```
+
+Endpoint: `GET /v1/avatar/{seed}.svg|.png` with query `style, size, radius, hair, gradient, pupils, eyebrows, mouth, rarity, tile, grid, padding, density`. Immutable cache headers. Cloudflare: `pnpm --filter @sigil/edge build` then `wrangler deploy` (SVG only). Node: `pnpm --filter @sigil/edge start` (SVG and PNG).
+
+The web component sets `role="img"` and a neutral `aria-label` (never the seed, since an address read aloud is noise). Use `label` to name it or `decorative` to hide it.
 
 ## How it works
 
-1. `hashSeed(seed)` gives a 32-bit value (FNV-1a over UTF-8, murmur-style finalizer).
-2. `createRng` (Mulberry32) streams values. Color draws come first so options never shift them.
-3. Left half of the grid is filled by density, then mirrored. Two colors, 25% accent.
-4. Tile colors are nudged in lightness until WCAG contrast with the background is at least 3:1.
-5. Square tiles merge into one SVG path per color, so output stays small.
+1. The seed is normalized, then SHA-256 in counter mode produces the random stream. Every draw happens up front, in a fixed order, so options never shift the stream.
+2. Face style: hair from the top, bottom or a side with 1 to 4 bands, eight eye shapes, nine palette modes, patterns, brows, nose and mouth. Continuous traits snap to a few levels so faces differ clearly.
+3. Eye, brow, nose and mouth positions are pulled inside a safe circle so round crops never cut features.
+4. Eyes and ink are nudged until WCAG contrast with the background is at least 3:1.
+5. Pixel style: mirrored block grid, merged into one SVG path per color.
 
 ## Roadmap
 
@@ -40,7 +67,7 @@ Measured with `node packages/core/scripts/grind.mjs` (200,000 random addresses, 
 
 | Match standard | Expected addresses to generate to match a random victim |
 |---|---|
-| Strict (every prominent trait equal) | about 6 x 10^8 (roughly 2^29) |
-| Loose (first-glance look: palette, hue, hair side, eyes, mouth) | about 2 x 10^4 |
+| Strict (every prominent trait equal) | about 3 x 10^17 (roughly 2^58, block-independence estimate) |
+| Loose (thumbnail-visible: palette, hue, hair, background, eye count, shape, size, mouth) | about 10^7 (roughly 2^23.5, measured directly) |
 
-Read these honestly. A GPU can generate billions of addresses per second, so the avatar alone does not stop a determined attacker. Its value is that it multiplies the work on top of the usual "match the first and last characters" attack. Use it alongside, not instead of, address checks.
+Read these honestly. The loose figure is the weak one: a person glancing at a small avatar matches on it. A GPU can generate billions of addresses per second, so the avatar alone does not stop a determined attacker. Its value is that it multiplies the work on top of the usual "match the first and last characters" attack. Use it alongside, not instead of, address checks.

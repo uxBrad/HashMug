@@ -4,8 +4,8 @@
   "packageManager": "pnpm@10.33.0",
   "scripts": {
     "dev": "pnpm --filter @sigil/sandbox dev",
-    "build": "pnpm --filter @sigil/core build",
-    "test": "pnpm --filter @sigil/core test",
-    "typecheck": "pnpm --filter @sigil/core typecheck"
+    "build": "pnpm -r build",
+    "test": "pnpm -r test",
+    "typecheck": "pnpm -r typecheck"
   }
 }

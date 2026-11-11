@@ -1,0 +1,28 @@
+{
+  "name": "@sigil/edge",
+  "version": "0.1.0",
+  "description": "HTTP avatar endpoint (Hono). Runs on Cloudflare Workers, Node, Deno, Bun.",
+  "license": "MIT",
+  "type": "module",
+  "main": "./dist/app.js",
+  "types": "./dist/app.d.ts",
+  "files": ["dist", "wrangler.toml"],
+  "scripts": {
+    "build": "tsup",
+    "start": "node dist/node.js",
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@hono/node-server": "^1.13.0",
+    "@sigil/core": "workspace:*",
+    "@sigil/png": "workspace:*",
+    "hono": "^4.6.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "tsup": "^8.3.0",
+    "typescript": "^5.6.0",
+    "vitest": "^2.1.0"
+  }
+}

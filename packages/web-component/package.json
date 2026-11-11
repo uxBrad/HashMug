@@ -1,0 +1,26 @@
+{
+  "name": "@sigil/web-component",
+  "version": "0.1.0",
+  "description": "<identicon-avatar> custom element. Works in any framework or plain HTML.",
+  "license": "MIT",
+  "type": "module",
+  "sideEffects": true,
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "files": ["dist"],
+  "scripts": {
+    "build": "tsup",
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@sigil/core": "workspace:*"
+  },
+  "devDependencies": {
+    "happy-dom": "^15.11.0",
+    "tsup": "^8.3.0",
+    "typescript": "^5.6.0",
+    "vitest": "^2.1.0"
+  }
+}
