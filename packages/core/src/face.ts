@@ -95,10 +95,24 @@ interface Palette {
 
 const MODES = ["pastel", "neon", "earthy", "mono", "duo", "bold", "ink", "triad"] as const;
 
-function makePalette(mode: string, h: number, h2: number, h3: number, v: number): Palette {
+function makePalette(mode: string, h: number, h2: number, h3: number, v: number, pv: number[]): Palette {
   switch (mode) {
-    case "pastel":
-      return { bg: [h, 55, 90], bg2: [h2, 55, 86], hair: [[h, 60, 68], [h, 55, 58], [h2, 60, 72], [h3, 55, 66]], eyes: [[h2, 55, 38], [h, 55, 38]], ink: [h, 40, 25] };
+    case "pastel": {
+      // Independent hues, saturations and lightnesses per band so pastels differ a lot.
+      const bgH = h + h3 * (pv[0] as number);
+      const bgS = 25 + (pv[1] as number) * 55;
+      const bgL = 84 + (pv[2] as number) * 11;
+      const sat = 45 + (pv[3] as number) * 40;
+      const hues = [h, h + h2 * (0.4 + (pv[4] as number)), h - h3 * (0.3 + (pv[5] as number)), h2 + h3];
+      const ls = [60 + (pv[6] as number) * 16, 52 + (pv[7] as number) * 18, 64 + (pv[8] as number) * 12, 56 + (pv[9] as number) * 16];
+      return {
+        bg: [bgH, bgS, bgL],
+        bg2: [bgH + 25 + (pv[0] as number) * 50, bgS, bgL - 5],
+        hair: hues.map((hh, i) => [hh, sat - i * 4, ls[i] as number] as HSL),
+        eyes: [[hues[1] as number, sat, 36], [hues[2] as number, sat, 34]],
+        ink: [bgH, 35, 24],
+      };
+    }
     case "neon":
       return { bg: [h, 35, 9], bg2: [h2, 45, 14], hair: [[h, 100, 60], [h2, 100, 55], [h3, 100, 62], [h + 30, 100, 66]], eyes: [[h2, 100, 62], [h3, 100, 62]], ink: [h, 100, 78] };
     case "earthy": {
@@ -120,6 +134,21 @@ function makePalette(mode: string, h: number, h2: number, h3: number, v: number)
   }
 }
 
+/** Features must sit inside this radius so round crops never cut them. */
+const SAFE_R = 46;
+const insideCircle = (pts: Pt[]) => pts.every(([x, y]) => Math.hypot(x - 50, y - 50) <= SAFE_R);
+/** Nudge (x, y) toward the center until every point from `pts` is inside the safe circle. */
+function pull(x: number, y: number, pts: (x: number, y: number) => Pt[]): Pt {
+  for (let i = 0; i < 60 && !insideCircle(pts(x, y)); i++) {
+    const dx = 50 - x;
+    const dy = 50 - y;
+    const d = Math.hypot(dx, dy);
+    if (d < 1) break;
+    x += dx / d;
+    y += dy / d;
+  }
+  return [x, y];
+}
 const EYE_SHAPES = [0, 0, 0, 1, 2, 3, 4, 5, 6, 7]; // circle weighted 3x
 const lerp = (a: number, b: number, t: number) => a + (b - a) * t;
 
@@ -173,7 +202,7 @@ export function createFaceSvg(seed: string, options: AvatarOptions = {}): string
   const bandStyles = [nx(), nx(), nx(), nx()];
   const gradRoll = nx();
   const eyeShapeSame = nx();
-  const eyeSizeBase = rg(4.5, 14);
+  const eyeSizeBase = rg(7, 15);
   const eyePitch = rg(14, 62);
   const eyeCx = rg(-8, 8);
   const eyeFrac = nx();
@@ -201,6 +230,7 @@ export function createFaceSvg(seed: string, options: AvatarOptions = {}): string
   const mouthOff = rg(-6, 6);
   const noseRoll = nx();
   const noseKind = nx();
+  const pastelV = Array.from({ length: 10 }, () => nx());
 
   // Rarity.
   const tier = !useRarity ? "common" : rarityRoll < 0.02 ? "cyclops" : rarityRoll < 0.05 ? "three" : rarityRoll < 0.11 ? "gold" : "common";
@@ -208,7 +238,7 @@ export function createFaceSvg(seed: string, options: AvatarOptions = {}): string
 
   // Palette.
   const mode = tier === "gold" ? "gold" : (MODES[Math.floor(modeRoll * MODES.length)] as string);
-  const pal = makePalette(mode, hue0, hue0 + off2, hue0 + off3, earthV);
+  const pal = makePalette(mode, hue0, hue0 + off2, hue0 + off3, earthV, pastelV);
   const bg = rgbOf(pal.bg);
   const bg2 = rgbOf(pal.bg2);
   const hairColors = pal.hair.map((c) => rgbOf(c));
@@ -238,7 +268,7 @@ export function createFaceSvg(seed: string, options: AvatarOptions = {}): string
     by += bandGaps[i]!;
   }
   const tiltMargin = Math.abs(Math.sin((tilted * Math.PI) / 180)) * 50;
-  depth = Math.min(depth + tiltMargin + 3, 62);
+  depth = Math.min(depth + tiltMargin + 3, 46);
   const gradient = options.gradient ?? gradRoll < 0.35;
 
   // Free rectangle left for the face after hair.
@@ -290,7 +320,7 @@ export function createFaceSvg(seed: string, options: AvatarOptions = {}): string
   const rowH = Math.max(...specs.map((s) => Math.max(s.rx, s.ry) * 1.1));
   let pitch = eyeCount === 1 ? 0 : eyePitch * (eyeCount === 3 ? 0.7 : 1);
   const rowW = pitch * (eyeCount - 1) + 2 * Math.max(...specs.map((s) => Math.max(s.rx, s.ry)));
-  const scale = clamp(Math.min(freeH / (2 * rowH), freeW / rowW, 1), 0.45, 1);
+  const scale = clamp(Math.min(freeH / (2 * rowH), freeW / rowW, 1.3), 0.45, 1.3);
   for (const s of specs) { s.rx *= scale; s.ry *= scale; }
   pitch *= scale;
   const rowH2 = rowH * scale;
@@ -303,6 +333,8 @@ export function createFaceSvg(seed: string, options: AvatarOptions = {}): string
     const ext = Math.max(s.rx, s.ry);
     s.x = clamp(cx + (k - (eyeCount - 1) / 2) * pitch, fx0 + 5 + ext, fx1 - 5 - ext);
     s.y = clamp(cy + e.jy * scale + (eyeCount === 3 && k === 1 ? -rowH2 * 0.6 : 0), fy0 + browSpace + ext * 0.5, fy1 - 5 - ext);
+    const up = brows ? ext + 11 : ext;
+    [s.x, s.y] = pull(s.x, s.y, (x, y) => [[x - ext, y], [x + ext, y], [x, y + ext], [x, y - up], [x - ext * 0.8, y - up], [x + ext * 0.8, y - up]]);
   });
 
   // Output.
@@ -388,9 +420,10 @@ export function createFaceSvg(seed: string, options: AvatarOptions = {}): string
   }
 
   const lowest = Math.max(...specs.map((s) => s.y + Math.max(s.rx, s.ry)));
-  const midX = clamp(specs.reduce((a, s) => a + s.x, 0) / specs.length + mouthOff, fx0 + 10, fx1 - 10);
+  let midX = clamp(specs.reduce((a, s) => a + s.x, 0) / specs.length + mouthOff, fx0 + 10, fx1 - 10);
   let nextY = lowest + 5;
   if (noseOn && nextY < fy1 - 10) {
+    [midX, nextY] = pull(midX, nextY, (x, y) => [[x - 4, y - 3], [x + 4, y + 5]]);
     if (noseKind < 0.5) out += `<circle cx="${num(midX)}" cy="${num(nextY + 1)}" r="2" fill="${inkHex}"/>`;
     else out += `<path d="M${num(midX - 1)} ${num(nextY - 2)}V${num(nextY + 4)}H${num(midX + 4)}" fill="none" stroke="${inkHex}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>`;
     nextY += 7;
@@ -399,7 +432,8 @@ export function createFaceSvg(seed: string, options: AvatarOptions = {}): string
     const w = Math.min(mouthW, (fx1 - fx0) / 2 - 6);
     const kind = Math.floor(mouthKind * 7);
     const reach = [w * 0.45, w * 0.1, 0, w / 2.4, w, 4, 2][kind] as number;
-    const my = clamp(nextY + mouthGap * 0.6, 0, fy1 - 3 - reach);
+    let my = clamp(nextY + mouthGap * 0.6, 0, fy1 - 3 - reach);
+    [midX, my] = pull(midX, my, (x, y) => [[x - w, y], [x + w, y], [x, y + reach]]);
     const sw = num(mouthStroke);
     if (kind === 0) out += `<path d="M${num(midX - w)} ${num(my)}Q${num(midX)} ${num(my + w * 0.9)} ${num(midX + w)} ${num(my)}" fill="none" stroke="${inkHex}" stroke-width="${sw}" stroke-linecap="round"/>`;
     else if (kind === 1) out += `<path d="M${num(midX - w)} ${num(my + w * 0.4)}Q${num(midX)} ${num(my - w * 0.5)} ${num(midX + w)} ${num(my + w * 0.4)}" fill="none" stroke="${inkHex}" stroke-width="${sw}" stroke-linecap="round"/>`;
