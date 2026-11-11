@@ -1,3 +1,4 @@
+import { createFaceSvg } from "./face";
 import { createModel } from "./generate";
 import { hashSeed } from "./hash";
 import type { AvatarModel, AvatarOptions, Cell } from "./types";
@@ -80,6 +81,7 @@ function runsPath(cells: Cell[], pad: number, cell: number): string {
 
 /** One call: seed in, SVG string out. */
 export function createAvatar(seed: string, options: AvatarOptions = {}): string {
+  if (options.style === "face") return createFaceSvg(seed, options);
   return renderSvg(createModel(seed, options), seed, options);
 }
 

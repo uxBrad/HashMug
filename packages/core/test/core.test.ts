@@ -47,3 +47,22 @@ describe("avatar", () => {
     expect(createModel("s", { grid: 5 }).colors).toEqual(createModel("s", { grid: 8 }).colors);
   });
 });
+
+describe("face style", () => {
+  it("is deterministic and differs by seed", () => {
+    const o = { style: "face" as const, mouth: true };
+    expect(createAvatar("a", o)).toBe(createAvatar("a", o));
+    expect(createAvatar("a", o)).not.toBe(createAvatar("b", o));
+  });
+  it("eyes stay inside the canvas for 500 seeds", () => {
+    for (let i = 0; i < 500; i++) {
+      const svg = createAvatar("f" + i, { style: "face", mouth: true });
+      for (const m of svg.matchAll(/<circle cx="([\d.]+)" cy="([\d.]+)" r="([\d.]+)"/g)) {
+        const [cx, cy, r] = [Number(m[1]), Number(m[2]), Number(m[3])];
+        expect(cx - r).toBeGreaterThanOrEqual(0);
+        expect(cx + r).toBeLessThanOrEqual(100);
+        expect(cy + r).toBeLessThanOrEqual(100);
+      }
+    }
+  });
+});

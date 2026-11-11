@@ -1,7 +1,27 @@
 /** Tile shape drawn for each filled cell. */
 export type TileShape = "square" | "rounded" | "circle";
 
+/** Visual style. "pixel" is the mirrored block grid, "face" is wavy hair plus eyes. */
+export type AvatarStyle = "pixel" | "face";
+
+/** Hair edge style for the face avatar. */
+export type HairStyle = "wave" | "slope" | "zigzag" | "scallop" | "straight";
+
 export interface AvatarOptions {
+  /** Visual style. Default "pixel". */
+  style?: AvatarStyle;
+  /** Face style: draw a mouth. Default false. */
+  mouth?: boolean;
+  /** Face style: draw pupils. Default true. */
+  pupils?: boolean;
+  /** Face style: draw eyebrows. Default true. */
+  eyebrows?: boolean;
+  /** Face style: hair edge style. Default: chosen by seed. */
+  hair?: HairStyle;
+  /** Face style: gradient on the top hair band. Default: chosen by seed. */
+  gradient?: boolean;
+  /** Face style: allow rare variants (gold hair, cyclops). Default true. */
+  rarity?: boolean;
   /** Grid cells per side. Default 8. Mirrored left to right. */
   grid?: number;
   /** Output size in px (sets width/height attributes). Omit for scalable (viewBox only). */
