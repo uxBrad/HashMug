@@ -2,15 +2,19 @@ import { createAvatar, type HairStyle, type TileShape } from "@sigil/core";
 
 const $ = <T extends HTMLElement>(id: string) => document.getElementById(id) as T;
 let salt = 0;
+const tri = (id: string): boolean | undefined => {
+  const v = $<HTMLSelectElement>(id).value;
+  return v === "" ? undefined : v === "on";
+};
 
 function render() {
   const prefix = $<HTMLInputElement>("prefix").value;
   const count = Number($<HTMLInputElement>("count").value);
   const opts = {
     style: $<HTMLSelectElement>("style").value as "face" | "pixel",
-    mouth: $<HTMLInputElement>("mouth").checked,
-    pupils: $<HTMLInputElement>("pupils").checked,
-    eyebrows: $<HTMLInputElement>("brows").checked,
+    mouth: tri("mouth"),
+    pupils: tri("pupils"),
+    eyebrows: tri("brows"),
     hair: ($<HTMLSelectElement>("hair").value || undefined) as HairStyle | undefined,
     gradient: $<HTMLSelectElement>("gradient").value === "" ? undefined : $<HTMLSelectElement>("gradient").value === "on",
     grid: Number($<HTMLSelectElement>("gridsize").value),
