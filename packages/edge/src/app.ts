@@ -18,9 +18,8 @@ const USAGE = `Sigil avatar API
 GET /v1/avatar/{seed}.svg
 GET /v1/avatar/{seed}.png   (when enabled)
 
-Query: style=face|pixel  size=16..1024  radius=0..0.5|round
+Query: size=16..1024  radius=0..0.5|round
        hair=wave|slope|zigzag|scallop|straight  gradient pupils eyebrows mouth rarity=true|false
-       tile=square|rounded|circle  grid=3..32  padding  density
 
 Example: <img src="/v1/avatar/0xabc....svg?radius=round" width="64" height="64" alt="">
 `;

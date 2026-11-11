@@ -14,7 +14,7 @@ describe("<identicon-avatar>", () => {
     const el = make({ seed: "brad", size: "48" });
     expect(el.shadowRoot?.innerHTML).toContain("width:48px");
     const rendered = el.shadowRoot?.querySelector("svg")?.outerHTML ?? "";
-    const core = createAvatar("brad", { style: "face" });
+    const core = createAvatar("brad");
     // Same drawing: same number of shapes and the same colors in the same order.
     const shapes = (s: string) => (s.match(/<(path|circle|ellipse|rect)\b/g) ?? []).length;
     const colors = (s: string) => (s.match(/#[0-9a-f]{6}/gi) ?? []).join(",").toLowerCase();
@@ -40,8 +40,8 @@ describe("<identicon-avatar>", () => {
     expect(el.getAttribute("aria-hidden")).toBe("true");
     expect(el.hasAttribute("role")).toBe(false);
   });
-  it("maps radius=round and the pixel variant", () => {
-    const el = make({ seed: "x", radius: "round", variant: "pixel" });
+  it("maps radius=round", () => {
+    const el = make({ seed: "x", radius: "round" });
     expect(el.shadowRoot?.innerHTML).toContain("clipPath");
   });
 });

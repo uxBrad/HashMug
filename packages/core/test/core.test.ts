@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { contrast, createAvatar, createModel, createRng, fnv1a, hashSeed, parseHex } from "../src";
+import { createAvatar, createRng, describeFace, fnv1a, hashSeed, normalizeSeed, sha256, toHex } from "../src";
 
 describe("hash and prng", () => {
   it("fnv1a matches known vectors", () => {
@@ -18,45 +18,20 @@ describe("hash and prng", () => {
   });
 });
 
-describe("avatar", () => {
-  it("is deterministic", () => {
-    expect(createAvatar("0xabc")).toBe(createAvatar("0xabc"));
-    expect(createAvatar("a")).not.toBe(createAvatar("b"));
-  });
-  it("is horizontally symmetric", () => {
-    const m = createModel("symmetry", { grid: 8 });
-    const set = new Set(m.cells.map((c) => `${c.x},${c.y},${c.color}`));
-    for (const c of m.cells) expect(set.has(`${7 - c.x},${c.y},${c.color}`)).toBe(true);
-  });
-  it("keeps contrast for 500 seeds", () => {
-    for (let i = 0; i < 500; i++) {
-      const m = createModel("seed" + i);
-      const bg = parseHex(m.background) as [number, number, number];
-      for (const c of m.colors) {
-        expect(contrast(parseHex(c) as [number, number, number], bg)).toBeGreaterThanOrEqual(3);
-      }
-    }
-  });
-  it("never empty and valid svg", () => {
-    const svg = createAvatar("x", { density: 0.05, tile: "circle", radius: 0.5 });
-    expect(svg.startsWith("<svg")).toBe(true);
-    expect(svg.endsWith("</svg>")).toBe(true);
-    expect(createModel("x", { density: 0.05 }).cells.length).toBeGreaterThan(0);
-  });
-  it("grid option does not change the colors", () => {
-    expect(createModel("s", { grid: 5 }).colors).toEqual(createModel("s", { grid: 8 }).colors);
-  });
-});
-
-describe("face style", () => {
+describe("face avatar", () => {
   it("is deterministic and differs by seed", () => {
-    const o = { style: "face" as const, mouth: true };
+    const o = { mouth: true };
     expect(createAvatar("a", o)).toBe(createAvatar("a", o));
     expect(createAvatar("a", o)).not.toBe(createAvatar("b", o));
   });
+  it("is valid SVG", () => {
+    const svg = createAvatar("x", { radius: 0.5 });
+    expect(svg.startsWith("<svg")).toBe(true);
+    expect(svg.endsWith("</svg>")).toBe(true);
+  });
   it("eyes stay inside the canvas for 500 seeds", () => {
     for (let i = 0; i < 500; i++) {
-      const svg = createAvatar("f" + i, { style: "face", mouth: true });
+      const svg = createAvatar("f" + i, { mouth: true }).replace(/<defs>.*?<\/defs>/, "");
       for (const m of svg.matchAll(/<circle cx="([\d.]+)" cy="([\d.]+)" r="([\d.]+)"/g)) {
         const [cx, cy, r] = [Number(m[1]), Number(m[2]), Number(m[3])];
         expect(cx - r).toBeGreaterThanOrEqual(0);
@@ -65,9 +40,12 @@ describe("face style", () => {
       }
     }
   });
+  it("describeFace returns traits", () => {
+    const t = describeFace("brad");
+    expect(typeof t.palette).toBe("string");
+    expect(t.eyeCount).toBeGreaterThanOrEqual(1);
+  });
 });
-
-import { normalizeSeed, sha256, toHex } from "../src";
 
 describe("sha256 and normalization", () => {
   const enc = (s: string) => Array.from(new TextEncoder().encode(s));
@@ -82,15 +60,15 @@ describe("sha256 and normalization", () => {
     const a = "0xAbCdEf0123456789aBcDeF0123456789AbCdEf01";
     const b = "abcdef0123456789abcdef0123456789abcdef01";
     expect(normalizeSeed(a)).toBe("0x" + b);
-    expect(createAvatar(a, { style: "face" })).toBe(createAvatar(b, { style: "face" }));
+    expect(createAvatar(a)).toBe(createAvatar(b));
     expect(createAvatar(a)).toBe(createAvatar(" " + b + " "));
   });
   it("usernames stay case sensitive", () => {
-    expect(createAvatar("Brad", { style: "face" })).not.toBe(createAvatar("brad", { style: "face" }));
+    expect(createAvatar("Brad")).not.toBe(createAvatar("brad"));
   });
   it("one changed hex digit changes the avatar", () => {
     const a = "0xabcdef0123456789abcdef0123456789abcdef01";
     const b = "0xabcdef0123456789abcdef0123456789abcdef02";
-    expect(createAvatar(a, { style: "face" })).not.toBe(createAvatar(b, { style: "face" }));
+    expect(createAvatar(a)).not.toBe(createAvatar(b));
   });
 });

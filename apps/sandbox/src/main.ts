@@ -1,7 +1,9 @@
-import { createAvatar, type HairStyle, type TileShape } from "@sigil/core";
+import { createAvatar, type HairStyle } from "@sigil/core";
 
 const $ = <T extends HTMLElement>(id: string) => document.getElementById(id) as T;
 let salt = 0;
+
+/** "auto" (empty) leaves the choice to the seed. */
 const tri = (id: string): boolean | undefined => {
   const v = $<HTMLSelectElement>(id).value;
   return v === "" ? undefined : v === "on";
@@ -11,17 +13,12 @@ function render() {
   const prefix = $<HTMLInputElement>("prefix").value;
   const count = Number($<HTMLInputElement>("count").value);
   const opts = {
-    style: $<HTMLSelectElement>("style").value as "face" | "pixel",
-    mouth: tri("mouth"),
+    radius: Number($<HTMLInputElement>("radius").value),
+    hair: ($<HTMLSelectElement>("hair").value || undefined) as HairStyle | undefined,
+    gradient: tri("gradient"),
     pupils: tri("pupils"),
     eyebrows: tri("brows"),
-    hair: ($<HTMLSelectElement>("hair").value || undefined) as HairStyle | undefined,
-    gradient: $<HTMLSelectElement>("gradient").value === "" ? undefined : $<HTMLSelectElement>("gradient").value === "on",
-    grid: Number($<HTMLSelectElement>("gridsize").value),
-    tile: $<HTMLSelectElement>("tile").value as TileShape,
-    radius: Number($<HTMLInputElement>("radius").value),
-    padding: Number($<HTMLInputElement>("padding").value),
-    density: Number($<HTMLInputElement>("density").value),
+    mouth: tri("mouth"),
   };
   document.documentElement.style.setProperty("--cell", $<HTMLInputElement>("cell").value + "px");
   const parts: string[] = [];

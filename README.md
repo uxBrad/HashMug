@@ -48,10 +48,9 @@ The web component sets `role="img"` and a neutral `aria-label` (never the seed, 
 ## How it works
 
 1. The seed is normalized, then SHA-256 in counter mode produces the random stream. Every draw happens up front, in a fixed order, so options never shift the stream.
-2. Face style: hair from the top, bottom or a side with 1 to 4 bands, eight eye shapes, nine palette modes, patterns, brows, nose and mouth. Continuous traits snap to a few levels so faces differ clearly.
+2. Hair from the top, bottom or a side with 1 to 4 bands, eight eye shapes, nine palette modes, patterns, brows, nose and mouth. Continuous traits snap to a few levels so faces differ clearly.
 3. Eye, brow, nose and mouth positions are pulled inside a safe circle so round crops never cut features.
 4. Eyes and ink are nudged until WCAG contrast with the background is at least 3:1.
-5. Pixel style: mirrored block grid, merged into one SVG path per color.
 
 ## Roadmap
 
@@ -63,7 +62,7 @@ Seeds that look like Ethereum addresses are normalized (lowercase, `0x`), so EIP
 
 The avatar is a second check for humans, never proof that an address is correct. Always verify the address itself.
 
-Measured with `node packages/core/scripts/grind.mjs` (200,000 random addresses, face style):
+Measured with `node packages/core/scripts/grind.mjs` (random addresses):
 
 | Match standard | Expected addresses to generate to match a random victim |
 |---|---|

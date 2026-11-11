@@ -1,7 +1,6 @@
-import type { AvatarOptions, HairStyle, TileShape } from "@sigil/core";
+import type { AvatarOptions, HairStyle } from "@sigil/core";
 
 const HAIR: HairStyle[] = ["wave", "slope", "zigzag", "scallop", "straight"];
-const TILES: TileShape[] = ["square", "rounded", "circle"];
 export const MAX_SEED_LENGTH = 400;
 export const MAX_PNG_SIZE = 1024;
 
@@ -34,13 +33,8 @@ function oneOf<T extends string>(q: URLSearchParams, key: string, allowed: reado
 export function parseOptions(q: URLSearchParams): { options: AvatarOptions; size: number | undefined } {
   const radiusRaw = q.get("radius");
   const options: AvatarOptions = {
-    style: oneOf(q, "style", ["face", "pixel"] as const) ?? "face",
     radius: radiusRaw === "round" ? 0.5 : num(q, "radius", 0, 0.5),
     hair: oneOf(q, "hair", HAIR),
-    tile: oneOf(q, "tile", TILES),
-    grid: num(q, "grid", 3, 32),
-    padding: num(q, "padding", 0, 0.4),
-    density: num(q, "density", 0.05, 0.95),
     gradient: bool(q, "gradient"),
     pupils: bool(q, "pupils"),
     eyebrows: bool(q, "eyebrows"),

@@ -8,7 +8,7 @@ it("faces are highly varied", () => {
   let ellipses = 0;
   let rings = 0;
   for (let i = 0; i < N; i++) {
-    const svg = createAvatar("v" + i, { style: "face" });
+    const svg = createAvatar("v" + i, {});
     seen.add(svg);
     bgs.add((/fill="(#[0-9a-f]{6})"/.exec(svg) ?? [])[1] ?? "");
     if (svg.includes("<ellipse")) ellipses++;
@@ -22,7 +22,7 @@ it("faces are highly varied", () => {
 
 it("face features stay inside a round crop", () => {
   for (let i = 0; i < 1000; i++) {
-    const svg = createAvatar("crop" + i, { style: "face", mouth: true, eyebrows: true }).replace(/<defs>.*?<\/defs>/, "");
+    const svg = createAvatar("crop" + i, { mouth: true, eyebrows: true }).replace(/<defs>.*?<\/defs>/, "");
     for (const m of svg.matchAll(/<circle cx="([\d.-]+)" cy="([\d.-]+)" r="([\d.]+)"/g)) {
       const d = Math.hypot(Number(m[1]) - 50, Number(m[2]) - 50) + Number(m[3]);
       expect(d).toBeLessThanOrEqual(47.5);

@@ -1,6 +1,5 @@
-import { createAvatar, type AvatarOptions, type HairStyle, type TileShape } from "@sigil/core";
+import { createAvatar, type AvatarOptions, type HairStyle } from "@sigil/core";
 
-const NUMBER_ATTRS = ["grid", "padding", "density"] as const;
 const BOOL_ATTRS = ["pupils", "eyebrows", "mouth", "gradient", "rarity"] as const;
 
 /** "true"/"" means on, "false" means off, absent means auto (decided by the seed). */
@@ -17,11 +16,10 @@ function readNumber(el: Element, name: string): number | undefined {
 }
 
 /**
- * `<identicon-avatar seed="0xabc..." variant="face" size="64" radius="round">`
+ * `<identicon-avatar seed="0xabc..." size="64" radius="round">`
  *
- * Attributes: seed, variant ("face" or "pixel", default "face"), size (px,
- * default 64), radius (0 to 0.5, or "round"), tile, hair, grid, padding,
- * density, pupils, eyebrows, mouth, gradient, rarity (true/false), label,
+ * Attributes: seed, size (px, default 64), radius (0 to 0.5, or "round"),
+ * hair, pupils, eyebrows, mouth, gradient, rarity (true/false), label,
  * decorative.
  *
  * Accessibility: the host is role="img" with aria-label from `label`
@@ -30,8 +28,8 @@ function readNumber(el: Element, name: string): number | undefined {
  */
 export class IdenticonAvatar extends HTMLElement {
   static observedAttributes = [
-    "seed", "variant", "size", "radius", "tile", "hair", "label", "decorative",
-    ...NUMBER_ATTRS, ...BOOL_ATTRS,
+    "seed", "size", "radius", "hair", "label", "decorative",
+    ...BOOL_ATTRS,
   ];
 
   private root: ShadowRoot;
@@ -53,12 +51,9 @@ export class IdenticonAvatar extends HTMLElement {
   get options(): AvatarOptions {
     const radiusAttr = this.getAttribute("radius");
     const opts: AvatarOptions = {
-      style: this.getAttribute("variant") === "pixel" ? "pixel" : "face",
       radius: radiusAttr === "round" ? 0.5 : readNumber(this, "radius"),
-      tile: (this.getAttribute("tile") as TileShape | null) ?? undefined,
       hair: (this.getAttribute("hair") as HairStyle | null) ?? undefined,
     };
-    for (const n of NUMBER_ATTRS) (opts as Record<string, unknown>)[n] = readNumber(this, n);
     for (const b of BOOL_ATTRS) {
       const key = b === "eyebrows" ? "eyebrows" : b;
       (opts as Record<string, unknown>)[key] = readBool(this, b);
