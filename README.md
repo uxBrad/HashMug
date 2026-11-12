@@ -11,17 +11,19 @@ const round = createAvatar("0xabc...", { radius: 0.5, size: 64 });
 
 ## Examples
 
-Each face comes from the seed text under it. Same seed, same face, everywhere.
+Any text works as a seed: names, handles, emails, ENS names, wallet addresses. Same seed, same face, everywhere.
 
-| <img src="docs/avatars/ada.svg" width="96" alt="ada"> | <img src="docs/avatars/grace.svg" width="96" alt="grace"> | <img src="docs/avatars/alan.svg" width="96" alt="alan"> | <img src="docs/avatars/linus.svg" width="96" alt="linus"> | <img src="docs/avatars/margaret.svg" width="96" alt="margaret"> | <img src="docs/avatars/tim.svg" width="96" alt="tim"> |
-|---|---|---|---|---|---|
-| ada | grace | alan | linus | margaret | tim |
-| <img src="docs/avatars/hedy.svg" width="96" alt="hedy"> | <img src="docs/avatars/dennis.svg" width="96" alt="dennis"> | <img src="docs/avatars/radia.svg" width="96" alt="radia"> | <img src="docs/avatars/ken.svg" width="96" alt="ken"> | <img src="docs/avatars/barbara.svg" width="96" alt="barbara"> | <img src="docs/avatars/guido.svg" width="96" alt="guido"> |
-| hedy | dennis | radia | ken | barbara | guido |
+| <img src="docs/avatars/copper.svg" width="110" alt="Avatar for copper.eth"> | <img src="docs/avatars/lantern.svg" width="110" alt="Avatar for lantern.eth"> | <img src="docs/avatars/velvet.svg" width="110" alt="Avatar for velvet.eth"> | <img src="docs/avatars/ember.svg" width="110" alt="Avatar for ember.eth"> | <img src="docs/avatars/quartz.svg" width="110" alt="Avatar for quartz.eth"> |
+|---|---|---|---|---|
+| `copper.eth` | `lantern.eth` | `velvet.eth` | `ember.eth` | `quartz.eth` |
+| <img src="docs/avatars/tundra.svg" width="110" alt="Avatar for tundra.eth"> | <img src="docs/avatars/origami.svg" width="110" alt="Avatar for origami.eth"> | <img src="docs/avatars/mosaic.svg" width="110" alt="Avatar for mosaic.eth"> | <img src="docs/avatars/paper-crane.svg" width="110" alt="Avatar for paper-crane.eth"> | <img src="docs/avatars/bob-example-org.svg" width="110" alt="Avatar for bob@example.org"> |
+| `tundra.eth` | `origami.eth` | `mosaic.eth` | `paper-crane.eth` | `bob@example.org` |
+| <img src="docs/avatars/amara-okafor.svg" width="110" alt="Avatar for Amara Okafor"> | <img src="docs/avatars/priya-shah.svg" width="110" alt="Avatar for Priya Shah"> | <img src="docs/avatars/starlit.svg" width="110" alt="Avatar for @starlit"> | <img src="docs/avatars/pocketwatch.svg" width="110" alt="Avatar for @pocketwatch"> | <img src="docs/avatars/eth-e5c7.svg" width="110" alt="Avatar for 0x03e9…e5c7"> |
+| `Amara Okafor` | `Priya Shah` | `@starlit` | `@pocketwatch` | `0x03e9…e5c7` |
 
-One changed character gives a visibly different face. These two Ethereum addresses differ only in the last digit (`...976F` and `...976E`):
+One changed character gives a visibly different face. These two addresses differ only in the last digit (`...7b2c` and `...7b2d`):
 
-<img src="docs/avatars/eth-976F.svg" width="96" alt="Avatar for address ending 976F"> <img src="docs/avatars/eth-976E.svg" width="96" alt="Avatar for address ending 976E">
+<img src="docs/avatars/eth-7b2c.svg" width="110" alt="Avatar for address ending 7b2c"> <img src="docs/avatars/eth-7b2d.svg" width="110" alt="Avatar for address ending 7b2d">
 
 Regenerate with `pnpm --filter @hashmug/core build && node packages/core/scripts/examples.mjs`.
 
