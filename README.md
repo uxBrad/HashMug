@@ -92,7 +92,8 @@ Measured with `node packages/core/scripts/grind.mjs` (random addresses):
 
 | Match standard | Expected addresses to generate to match a random victim |
 |---|---|
-| Strict (every prominent trait equal) | about 3 x 10^17 (roughly 2^58, block-independence estimate) |
-| Loose (thumbnail-visible: palette, hue, hair, background, eye count, shape, size, mouth) | about 10^7 (roughly 2^23.5, measured directly) |
+| Strict (every prominent trait equal) | about 7 x 10^17 (roughly 2^59, block-independence estimate) |
+| Loose (thumbnail-visible: palette, hue, hair, background, eye count, shape, size, mouth) | about 3 x 10^7 (roughly 2^25, measured directly) |
+| Wider glance (loose, plus hair thickness, eye spacing, brows, mood) | about 6 x 10^9 (roughly 2^32, measured, few collisions so treat as approximate) |
 
 Read these honestly. The loose figure is the weak one: a person glancing at a small avatar matches on it. A GPU can generate billions of addresses per second, so the avatar alone does not stop a determined attacker. Its value is that it multiplies the work on top of the usual "match the first and last characters" attack. Use it alongside, not instead of, address checks.

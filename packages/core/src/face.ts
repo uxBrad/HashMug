@@ -229,7 +229,7 @@ export function buildFace(seed: string, options: FaceOverrides = {}): { svg: str
   const modeRoll = nx();
   // Every continuous trait is snapped to a few levels so that one different
   // hash bit gives a clearly different face, not a near-identical one.
-  const hue0 = qg(0, 330, 12);
+  const hue0 = qg(0, 340, 18);
   const off2 = qg(60, 180, 3);
   const off3 = qg(60, 180, 3);
   const earthV = qn(4);
@@ -259,10 +259,10 @@ export function buildFace(seed: string, options: FaceOverrides = {}): { svg: str
   const bandStyles = [nx(), nx(), nx(), nx()];
   const gradRoll = nx();
   const eyeShapeSame = nx();
-  const eyeSizeBase = qg(7, 15, 3);
+  const eyeSizeBase = qg(7, 15, 4);
   const eyePitch = qg(14, 62, 4);
   const eyeCx = qg(-8, 8, 3);
-  const eyeFrac = qn(3);
+  const eyeFrac = qn(4);
   const eyeRaw = [0, 1, 2, 3].map(() => ({
     size: qg(0.65, 1.3, 3),
     shape: nx(),
@@ -592,7 +592,7 @@ export function buildFace(seed: string, options: FaceOverrides = {}): { svg: str
   const traits: FaceTraits = {
     tier,
     palette: mode,
-    hue: Math.round(hue0 / 30) % 12,
+    hue: Math.round(hue0 / 20) % 18,
     orientation: orient,
     tilt: Math.sign(tilted),
     bands: bandCount,
@@ -603,9 +603,9 @@ export function buildFace(seed: string, options: FaceOverrides = {}): { svg: str
     background: bgMode,
     eyeCount,
     eyeShapes: specs.map((sp) => sp.shape).join(""),
-    eyeSize: Math.round(((eyeSizeBase - 7) / 8) * 2),
+    eyeSize: Math.round(((eyeSizeBase - 7) / 8) * 3),
     eyeSpacing: Math.round(((eyePitch - 14) / 48) * 3),
-    eyeHeight: Math.round(eyeFrac * 2),
+    eyeHeight: Math.round(eyeFrac * 3),
     brows: brows ? (browStyle < 0.35 ? 0 : browStyle < 0.7 ? 1 : browStyle < 0.85 ? 2 : 3) : -1,
     mood: Math.round(mood),
     mouth: mouthOn ? Math.floor(mouthKind * 10) : -1,

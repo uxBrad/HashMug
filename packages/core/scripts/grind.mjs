@@ -19,6 +19,10 @@ const BLOCKS = {
 // Loose: what is still visible in a small thumbnail. Counted directly.
 const LOOSE = ["tier", "palette", "hue", "orientation", "bands", "hairStyle", "background", "eyeCount", "eyeShapes", "eyeSize", "eyeHeight", "mouth"];
 
+// Wider glance: also counts hair thickness, eye spacing, brows and mood, which
+// are all readable at 64px and up. A larger set means more work for an attacker.
+const LOOSE_WIDE = [...LOOSE, "hairDepth", "eyeSpacing", "brows", "mood"];
+
 const keyOf = (t, fields) => fields.map((f) => t[f]).join("|");
 
 function collisionStats(list, fields) {
@@ -65,4 +69,9 @@ console.log(`\nLoose match (thumbnail-visible traits), measured directly:`);
 console.log(`  ${l.classes.toLocaleString()} classes seen, ${l.pairs.toLocaleString()} colliding pairs`);
 console.log(`  => expected addresses to match a random victim: ~${fmt(1 / l.p)} (about 2^${log2(1 / l.p).toFixed(1)})`);
 console.log(`  => commonest-look victim: ~${fmt(1 / l.maxShare)}`);
+const w = collisionStats(list, LOOSE_WIDE);
+console.log(`\nWider glance (adds hair thickness, eye spacing, brows, mood), measured directly:`);
+console.log(`  ${w.classes.toLocaleString()} classes seen, ${w.pairs.toLocaleString()} colliding pairs`);
+console.log(`  => expected addresses to match a random victim: ~${fmt(1 / w.p)} (about 2^${log2(1 / w.p).toFixed(1)})`);
+console.log(`  => commonest-look victim: ~${fmt(1 / w.maxShare)}`);
 console.log(`\nNote: blocks are treated as independent. Small correlations (for example cyclops tier fixes eye count) make the strict figure slightly optimistic.`);
