@@ -6,8 +6,24 @@ Deterministic identicons from any string. Zero dependencies, SVG out.
 import { createAvatar } from "@hashmug/core";
 
 const svg = createAvatar("brad@example.com");
-const small = createAvatar("0xabc...", { grid: 5, tile: "rounded", radius: 0.5, size: 64 });
+const round = createAvatar("0xabc...", { radius: 0.5, size: 64 });
 ```
+
+## Examples
+
+Each face comes from the seed text under it. Same seed, same face, everywhere.
+
+| <img src="docs/avatars/ada.svg" width="96" alt="ada"> | <img src="docs/avatars/grace.svg" width="96" alt="grace"> | <img src="docs/avatars/alan.svg" width="96" alt="alan"> | <img src="docs/avatars/linus.svg" width="96" alt="linus"> | <img src="docs/avatars/margaret.svg" width="96" alt="margaret"> | <img src="docs/avatars/tim.svg" width="96" alt="tim"> |
+|---|---|---|---|---|---|
+| ada | grace | alan | linus | margaret | tim |
+| <img src="docs/avatars/hedy.svg" width="96" alt="hedy"> | <img src="docs/avatars/dennis.svg" width="96" alt="dennis"> | <img src="docs/avatars/radia.svg" width="96" alt="radia"> | <img src="docs/avatars/ken.svg" width="96" alt="ken"> | <img src="docs/avatars/barbara.svg" width="96" alt="barbara"> | <img src="docs/avatars/guido.svg" width="96" alt="guido"> |
+| hedy | dennis | radia | ken | barbara | guido |
+
+One changed character gives a visibly different face. These two Ethereum addresses differ only in the last digit (`...976F` and `...976E`):
+
+<img src="docs/avatars/eth-976F.svg" width="96" alt="Avatar for address ending 976F"> <img src="docs/avatars/eth-976E.svg" width="96" alt="Avatar for address ending 976E">
+
+Regenerate with `pnpm --filter @hashmug/core build && node packages/core/scripts/examples.mjs`.
 
 ## Packages
 
@@ -60,7 +76,7 @@ Trait overrides exist for the sandbox and tests only, under `@hashmug/core/inter
 
 ## Roadmap
 
-See `Brain/Projects/HashMug/Backlog.md`.
+See [ROADMAP.md](ROADMAP.md).
 
 ## Wallet addresses: what the avatar does and does not do
 
