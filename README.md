@@ -46,7 +46,9 @@ const traits = describeFace("0xAbC...");                  // palette, eyes, hair
 ```
 
 ```html
-<script type="module" src="@hashmug/web-component"></script>
+<!-- plain page: the self-contained build, no bundler needed -->
+<script src="node_modules/@hashmug/web-component/dist/index.global.js"></script>
+<!-- with a bundler: import "@hashmug/web-component"; -->
 <identicon-avatar seed="0xAbC..." size="64" radius="round" label="Profile picture"></identicon-avatar>
 ```
 
