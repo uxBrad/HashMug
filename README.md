@@ -16,10 +16,10 @@ Any text works as a seed: names, handles, emails, ENS names, wallet addresses. S
 | <img src="docs/avatars/copper.svg" width="110" alt="Avatar for copper.eth"> | <img src="docs/avatars/lantern.svg" width="110" alt="Avatar for lantern.eth"> | <img src="docs/avatars/velvet.svg" width="110" alt="Avatar for velvet.eth"> | <img src="docs/avatars/ember.svg" width="110" alt="Avatar for ember.eth"> | <img src="docs/avatars/quartz.svg" width="110" alt="Avatar for quartz.eth"> |
 |---|---|---|---|---|
 | `copper.eth` | `lantern.eth` | `velvet.eth` | `ember.eth` | `quartz.eth` |
-| <img src="docs/avatars/tundra.svg" width="110" alt="Avatar for tundra.eth"> | <img src="docs/avatars/origami.svg" width="110" alt="Avatar for origami.eth"> | <img src="docs/avatars/mosaic.svg" width="110" alt="Avatar for mosaic.eth"> | <img src="docs/avatars/paper-crane.svg" width="110" alt="Avatar for paper-crane.eth"> | <img src="docs/avatars/bob-example-org.svg" width="110" alt="Avatar for bob@example.org"> |
-| `tundra.eth` | `origami.eth` | `mosaic.eth` | `paper-crane.eth` | `bob@example.org` |
-| <img src="docs/avatars/amara-okafor.svg" width="110" alt="Avatar for Amara Okafor"> | <img src="docs/avatars/priya-shah.svg" width="110" alt="Avatar for Priya Shah"> | <img src="docs/avatars/starlit.svg" width="110" alt="Avatar for @starlit"> | <img src="docs/avatars/pocketwatch.svg" width="110" alt="Avatar for @pocketwatch"> | <img src="docs/avatars/eth-e5c7.svg" width="110" alt="Avatar for 0x03e9…e5c7"> |
-| `Amara Okafor` | `Priya Shah` | `@starlit` | `@pocketwatch` | `0x03e9…e5c7` |
+| <img src="docs/avatars/tundra.svg" width="110" alt="Avatar for tundra.eth"> | <img src="docs/avatars/origami.svg" width="110" alt="Avatar for origami.eth"> | <img src="docs/avatars/mosaic.svg" width="110" alt="Avatar for mosaic.eth"> | <img src="docs/avatars/uxbrad-eth.svg" width="110" alt="Avatar for uxbrad.eth"> | <img src="docs/avatars/bob-example-org.svg" width="110" alt="Avatar for bob@example.org"> |
+| `tundra.eth` | `origami.eth` | `mosaic.eth` | `uxbrad.eth` | `bob@example.org` |
+| <img src="docs/avatars/amara-okafor.svg" width="110" alt="Avatar for Amara Okafor"> | <img src="docs/avatars/priya-shah.svg" width="110" alt="Avatar for Priya Shah"> | <img src="docs/avatars/starlit.svg" width="110" alt="Avatar for @starlit"> | <img src="docs/avatars/uxbrad.svg" width="110" alt="Avatar for @uxbrad"> | <img src="docs/avatars/eth-e5c7.svg" width="110" alt="Avatar for 0x03e9…e5c7"> |
+| `Amara Okafor` | `Priya Shah` | `@starlit` | `@uxbrad` | `0x03e9…e5c7` |
 
 One changed character gives a visibly different face. These two addresses differ only in the last digit (`...7b2c` and `...7b2d`):
 

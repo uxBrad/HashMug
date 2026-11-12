@@ -6,8 +6,8 @@ const B = A.slice(0, -1) + "d"; // one character different
 export const examples = [
   ["copper.eth", "copper"], ["lantern.eth", "lantern"], ["velvet.eth", "velvet"], ["ember.eth", "ember"],
   ["quartz.eth", "quartz"], ["tundra.eth", "tundra"], ["origami.eth", "origami"], ["mosaic.eth", "mosaic"],
-  ["paper-crane.eth", "paper-crane"], ["bob@example.org", "bob-example-org"], ["Amara Okafor", "amara-okafor"],
-  ["Priya Shah", "priya-shah"], ["@starlit", "starlit"], ["@pocketwatch", "pocketwatch"],
+  ["uxbrad.eth", "uxbrad-eth"], ["bob@example.org", "bob-example-org"], ["Amara Okafor", "amara-okafor"],
+  ["Priya Shah", "priya-shah"], ["@starlit", "starlit"], ["@uxbrad", "uxbrad"],
   ["0x03e9c5a8d71f4b26a0c8e35d97b14f62d8a0e5c7", "eth-e5c7"], [A, "eth-7b2c"], [B, "eth-7b2d"],
 ];
 const out = new URL("../../../docs/avatars/", import.meta.url);
