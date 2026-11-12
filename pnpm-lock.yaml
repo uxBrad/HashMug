@@ -34,10 +34,10 @@ importers:
       '@hono/node-server':
         specifier: ^1.13.0
         version: 1.19.19(hono@4.13.18)
-      '@sigil/core':
+      '@hashmug/core':
         specifier: workspace:*
         version: link:../core
-      '@sigil/png':
+      '@hashmug/png':
         specifier: workspace:*
         version: link:../png
       hono:
@@ -62,7 +62,7 @@ importers:
       '@resvg/resvg-js':
         specifier: ^2.6.2
         version: 2.6.2
-      '@sigil/core':
+      '@hashmug/core':
         specifier: workspace:*
         version: link:../core
     devDependencies:
@@ -81,7 +81,7 @@ importers:
 
   packages/web-component:
     dependencies:
-      '@sigil/core':
+      '@hashmug/core':
         specifier: workspace:*
         version: link:../core
     devDependencies:

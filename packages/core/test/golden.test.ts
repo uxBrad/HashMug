@@ -5,5 +5,5 @@ const h = (s: string) => toHex(sha256(Array.from(new TextEncoder().encode(s))));
 
 it("output contract is pinned (change only with a deliberate version bump)", () => {
   const seed = "0xabcdef0123456789abcdef0123456789abcdef01";
-  expect(h(createAvatar(seed))).toBe("2b8cc51072b315a93f9279306a449b0f36e560d8dc7adb0d217e990f3fc648fe");
+  expect(h(createAvatar(seed))).toBe("8b84f4d83dcd901e43bee6adde750f5417d77bc6b741048ef7ddb20770f68b57");
 });

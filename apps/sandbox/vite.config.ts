@@ -7,8 +7,8 @@ export default defineConfig({
   resolve: {
     // Order matters: the more specific path first.
     alias: [
-      { find: "@sigil/core/internal", replacement: core("internal.ts") },
-      { find: "@sigil/core", replacement: core("index.ts") },
+      { find: "@hashmug/core/internal", replacement: core("internal.ts") },
+      { find: "@hashmug/core", replacement: core("index.ts") },
     ],
   },
 });

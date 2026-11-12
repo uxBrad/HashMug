@@ -1,6 +1,6 @@
 // Estimates how hard it is to grind a wallet address whose face avatar looks
 // like a target's.
-// Run: pnpm --filter @sigil/core build && node packages/core/scripts/grind.mjs [N]
+// Run: pnpm --filter @hashmug/core build && node packages/core/scripts/grind.mjs [N]
 import { describeFace, createSeedRng } from "../dist/index.js";
 
 const N = Number(process.argv[2] ?? 150000);

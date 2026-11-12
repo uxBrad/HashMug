@@ -22,7 +22,7 @@ export interface AvatarOptions {
  * Trait overrides. INTERNAL: for the sandbox, tests and tooling only.
  * Using these makes a seed look different from the same seed elsewhere,
  * which defeats recognition and the anti-spoofing goal. Import from
- * "@sigil/core/internal".
+ * "@hashmug/core/internal".
  */
 export interface FaceOverrides extends AvatarOptions {
   /** Minimum WCAG contrast of eyes and features against the background. Default 3. */

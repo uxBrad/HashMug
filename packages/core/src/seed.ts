@@ -20,7 +20,7 @@ export function normalizeSeed(seed: string, mode: SeedNormalize = "auto"): strin
   return s;
 }
 
-const DOMAIN = "sigil:v1:";
+const DOMAIN = "hashmug:v1:";
 
 /**
  * Deterministic random stream: SHA-256 over (domain + seed + counter).

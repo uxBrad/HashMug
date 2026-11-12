@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { rasterizeToPng } from "@sigil/png";
+import { rasterizeToPng } from "@hashmug/png";
 import { createApp } from "../src/app";
 
 const ADDR = "0xabcdef0123456789abcdef0123456789abcdef01";

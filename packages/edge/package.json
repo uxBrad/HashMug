@@ -1,5 +1,5 @@
 {
-  "name": "@sigil/edge",
+  "name": "@hashmug/edge",
   "version": "0.1.0",
   "description": "HTTP avatar endpoint (Hono). Runs on Cloudflare Workers, Node, Deno, Bun.",
   "license": "MIT",
@@ -15,8 +15,8 @@
   },
   "dependencies": {
     "@hono/node-server": "^1.13.0",
-    "@sigil/core": "workspace:*",
-    "@sigil/png": "workspace:*",
+    "@hashmug/core": "workspace:*",
+    "@hashmug/png": "workspace:*",
     "hono": "^4.6.0"
   },
   "devDependencies": {

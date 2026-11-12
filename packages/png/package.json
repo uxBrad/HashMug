@@ -1,7 +1,7 @@
 {
-  "name": "@sigil/png",
+  "name": "@hashmug/png",
   "version": "0.1.0",
-  "description": "PNG and raw RGBA pixel export for Sigil avatars (Node).",
+  "description": "PNG and raw RGBA pixel export for HashMug avatars (Node).",
   "license": "MIT",
   "type": "module",
   "main": "./dist/index.cjs",
@@ -22,7 +22,7 @@
   },
   "dependencies": {
     "@resvg/resvg-js": "^2.6.2",
-    "@sigil/core": "workspace:*"
+    "@hashmug/core": "workspace:*"
   },
   "devDependencies": {
     "@types/node": "^22.0.0",

@@ -1,9 +1,9 @@
-# Sigil
+# HashMug
 
 Deterministic identicons from any string. Zero dependencies, SVG out.
 
 ```ts
-import { createAvatar } from "@sigil/core";
+import { createAvatar } from "@hashmug/core";
 
 const svg = createAvatar("brad@example.com");
 const small = createAvatar("0xabc...", { grid: 5, tile: "rounded", radius: 0.5, size: 64 });
@@ -12,28 +12,28 @@ const small = createAvatar("0xabc...", { grid: 5, tile: "rounded", radius: 0.5, 
 ## Packages
 
 ```
-packages/core            @sigil/core: zero-dependency engine. SHA-256 seeding, face avatars, SVG out
-packages/web-component   @sigil/web-component: <identicon-avatar>, works in any framework
-packages/png             @sigil/png: PNG bytes and raw RGBA pixels (Node, uses resvg)
-packages/edge            @sigil/edge: Hono endpoint. Worker (SVG) and Node (SVG + PNG)
+packages/core            @hashmug/core: zero-dependency engine. SHA-256 seeding, face avatars, SVG out
+packages/web-component   @hashmug/web-component: <identicon-avatar>, works in any framework
+packages/png             @hashmug/png: PNG bytes and raw RGBA pixels (Node, uses resvg)
+packages/edge            @hashmug/edge: Hono endpoint. Worker (SVG) and Node (SVG + PNG)
 apps/sandbox             Vite harness, hundreds of seeds with live controls
 ```
 
 ## Use it
 
 ```ts
-import { createAvatar, describeFace } from "@sigil/core";
+import { createAvatar, describeFace } from "@hashmug/core";
 const svg = createAvatar("0xAbC...", { radius: 0.5 });   // face style by default
 const traits = describeFace("0xAbC...");                  // palette, eyes, hair, and so on
 ```
 
 ```html
-<script type="module" src="@sigil/web-component"></script>
+<script type="module" src="@hashmug/web-component"></script>
 <identicon-avatar seed="0xAbC..." size="64" radius="round" label="Profile picture"></identicon-avatar>
 ```
 
 ```ts
-import { avatarPng, avatarPixels } from "@sigil/png";    // Node
+import { avatarPng, avatarPixels } from "@hashmug/png";    // Node
 const png = avatarPng("0xAbC...", { radius: 0.5 }, 256);
 ```
 
@@ -41,7 +41,7 @@ const png = avatarPng("0xAbC...", { radius: 0.5 }, 256);
 <img src="https://your-host/v1/avatar/0xAbC....svg?radius=round" width="64" height="64" alt="">
 ```
 
-Endpoint: `GET /v1/avatar/{seed}.svg|.png` with query `size` and `radius` only. Immutable cache headers. Cloudflare: `pnpm --filter @sigil/edge build` then `wrangler deploy` (SVG only). Node: `pnpm --filter @sigil/edge start` (SVG and PNG).
+Endpoint: `GET /v1/avatar/{seed}.svg|.png` with query `size` and `radius` only. Immutable cache headers. Cloudflare: `pnpm --filter @hashmug/edge build` then `wrangler deploy` (SVG only). Node: `pnpm --filter @hashmug/edge start` (SVG and PNG).
 
 The web component sets `role="img"` and a neutral `aria-label` (never the seed, since an address read aloud is noise). Use `label` to name it or `decorative` to hide it.
 
@@ -49,7 +49,7 @@ The web component sets `role="img"` and a neutral `aria-label` (never the seed, 
 
 Options are deliberately minimal: `size`, `radius` (presentation) and `normalize` (how the seed text is read). Nothing lets an app change the face, so the same wallet looks the same in every product and nobody can quietly switch off the traits that make faces hard to fake. A different look means a new version (`/v2/`), not a per-app setting.
 
-Trait overrides exist for the sandbox and tests only, under `@sigil/core/internal`. Do not use them in products.
+Trait overrides exist for the sandbox and tests only, under `@hashmug/core/internal`. Do not use them in products.
 
 ## How it works
 
@@ -60,7 +60,7 @@ Trait overrides exist for the sandbox and tests only, under `@sigil/core/interna
 
 ## Roadmap
 
-See `Brain/Projects/Sigil/Backlog.md`.
+See `Brain/Projects/HashMug/Backlog.md`.
 
 ## Wallet addresses: what the avatar does and does not do
 

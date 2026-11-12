@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { createAvatar } from "@sigil/core";
+import { createAvatar } from "@hashmug/core";
 import "../src";
 
 function make(attrs: Record<string, string>): HTMLElement {

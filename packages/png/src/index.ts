@@ -1,5 +1,5 @@
 import { Resvg } from "@resvg/resvg-js";
-import { createAvatar, type AvatarOptions } from "@sigil/core";
+import { createAvatar, type AvatarOptions } from "@hashmug/core";
 
 export interface RgbaImage {
   width: number;
@@ -32,5 +32,5 @@ export function avatarPixels(seed: string, options: AvatarOptions = {}, size = 2
   return rasterizeSvg(createAvatar(seed, options), size).rgba;
 }
 
-/** Rasterizer in the shape `@sigil/edge` expects: SVG string and size in, PNG out. */
+/** Rasterizer in the shape `@hashmug/edge` expects: SVG string and size in, PNG out. */
 export const rasterizeToPng = (svg: string, size: number): Uint8Array => rasterizeSvg(svg, size).png;

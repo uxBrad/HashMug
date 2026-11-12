@@ -1,5 +1,5 @@
-name = "sigil-avatars"
+name = "hashmug-avatars"
 main = "dist/worker.js"
 compatibility_date = "2025-01-01"
-# Deploy: pnpm --filter @sigil/edge build && npx wrangler deploy
+# Deploy: pnpm --filter @hashmug/edge build && npx wrangler deploy
 # Serves SVG only. For PNG, run the Node entry or add @resvg/resvg-wasm.

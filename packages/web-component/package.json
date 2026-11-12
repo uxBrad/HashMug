@@ -1,5 +1,5 @@
 {
-  "name": "@sigil/web-component",
+  "name": "@hashmug/web-component",
   "version": "0.1.0",
   "description": "<identicon-avatar> custom element. Works in any framework or plain HTML.",
   "license": "MIT",
@@ -15,7 +15,7 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@sigil/core": "workspace:*"
+    "@hashmug/core": "workspace:*"
   },
   "devDependencies": {
     "happy-dom": "^15.11.0",

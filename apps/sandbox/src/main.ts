@@ -1,5 +1,5 @@
 // Internal overrides on purpose: the sandbox is for judging faces, with traits forced.
-import { createFaceSvg as createAvatar, type HairStyle } from "@sigil/core/internal";
+import { createFaceSvg as createAvatar, type HairStyle } from "@hashmug/core/internal";
 
 const $ = <T extends HTMLElement>(id: string) => document.getElementById(id) as T;
 let salt = 0;

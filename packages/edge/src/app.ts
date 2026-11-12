@@ -1,4 +1,4 @@
-import { createAvatar } from "@sigil/core";
+import { createAvatar } from "@hashmug/core";
 import { Hono } from "hono";
 import { MAX_SEED_LENGTH, ParamError, parseOptions } from "./params";
 
@@ -6,14 +6,14 @@ export interface AppOptions {
   /**
    * Turns an SVG into PNG bytes. When omitted, `.png` requests return 501 and
    * only SVG is served (this keeps the Worker free of native code). Node
-   * entry wires in `@sigil/png`.
+   * entry wires in `@hashmug/png`.
    */
   rasterize?: (svg: string, size: number) => Uint8Array | Promise<Uint8Array>;
   /** Cache-Control for avatar responses. Default: one year, immutable. */
   cacheControl?: string;
 }
 
-const USAGE = `Sigil avatar API
+const USAGE = `HashMug avatar API
 
 GET /v1/avatar/{seed}.svg
 GET /v1/avatar/{seed}.png   (when enabled)

@@ -3,6 +3,6 @@ import { fileURLToPath } from "node:url";
 
 export default defineConfig({
   resolve: {
-    alias: { "@sigil/core": fileURLToPath(new URL("../core/src/index.ts", import.meta.url)) },
+    alias: { "@hashmug/core": fileURLToPath(new URL("../core/src/index.ts", import.meta.url)) },
   },
 });

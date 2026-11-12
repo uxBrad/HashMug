@@ -1,4 +1,4 @@
-import { createAvatar, type AvatarOptions } from "@sigil/core";
+import { createAvatar, type AvatarOptions } from "@hashmug/core";
 
 function readNumber(el: Element, name: string): number | undefined {
   const v = el.getAttribute(name);

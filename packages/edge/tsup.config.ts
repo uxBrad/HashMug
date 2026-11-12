@@ -6,6 +6,6 @@ export default defineConfig({
   dts: { entry: ["src/app.ts"] },
   clean: true,
   // Core is bundled so the Worker has no runtime dependencies besides hono.
-  noExternal: ["@sigil/core"],
+  noExternal: ["@hashmug/core"],
   external: ["@resvg/resvg-js"],
 });

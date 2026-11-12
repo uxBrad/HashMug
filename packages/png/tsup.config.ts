@@ -6,5 +6,5 @@ export default defineConfig({
   dts: true,
   clean: true,
   external: ["@resvg/resvg-js"],
-  noExternal: ["@sigil/core"],
+  noExternal: ["@hashmug/core"],
 });

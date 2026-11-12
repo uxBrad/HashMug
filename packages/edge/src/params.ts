@@ -1,4 +1,4 @@
-import type { AvatarOptions } from "@sigil/core";
+import type { AvatarOptions } from "@hashmug/core";
 
 export const MAX_SEED_LENGTH = 400;
 export const MAX_PNG_SIZE = 1024;

@@ -1,5 +1,5 @@
 {
-  "name": "@sigil/core",
+  "name": "@hashmug/core",
   "version": "0.1.0",
   "description": "Deterministic identicon and avatar generator. Zero dependencies, SVG output.",
   "license": "MIT",

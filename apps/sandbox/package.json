@@ -1,5 +1,5 @@
 {
-  "name": "@sigil/sandbox",
+  "name": "@hashmug/sandbox",
   "private": true,
   "type": "module",
   "scripts": { "dev": "vite", "build": "vite build" },
