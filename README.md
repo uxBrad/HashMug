@@ -32,6 +32,8 @@ Regenerate with `pnpm --filter @hashmug/core build && node packages/core/scripts
 ```
 packages/core            @hashmug/core: zero-dependency engine. SHA-256 seeding, face avatars, SVG out
 packages/web-component   @hashmug/web-component: <identicon-avatar>, works in any framework
+packages/react            @hashmug/react: <HashMug seed="..." /> component
+packages/vue              @hashmug/vue: <HashMug seed="..." /> component (Vue 3)
 packages/png             @hashmug/png: PNG bytes and raw RGBA pixels (Node, uses resvg)
 packages/edge            @hashmug/edge: Hono endpoint. Worker (SVG) and Node (SVG + PNG)
 apps/sandbox             Vite harness, hundreds of seeds with live controls
@@ -48,6 +50,11 @@ const traits = describeFace("0xAbC...");                  // palette, eyes, hair
 ```ts
 import { drawAvatar } from "@hashmug/core";   // browser only, async
 await drawAvatar(canvas, "0xAbC...", { radius: 0.5 });  // size defaults to canvas.width
+```
+
+```tsx
+import { HashMug } from "@hashmug/react";   // or @hashmug/vue
+<HashMug seed="0xAbC..." size={64} radius="round" label="Profile picture" />
 ```
 
 ```html
