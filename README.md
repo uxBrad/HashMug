@@ -45,6 +45,11 @@ const svg = createAvatar("0xAbC...", { radius: 0.5 });   // face style by defaul
 const traits = describeFace("0xAbC...");                  // palette, eyes, hair, and so on
 ```
 
+```ts
+import { drawAvatar } from "@hashmug/core";   // browser only, async
+await drawAvatar(canvas, "0xAbC...", { radius: 0.5 });  // size defaults to canvas.width
+```
+
 ```html
 <!-- plain page: the self-contained build, no bundler needed -->
 <script src="node_modules/@hashmug/web-component/dist/index.global.js"></script>

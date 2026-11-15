@@ -3,6 +3,7 @@ import { publicOptions } from "./svg";
 import type { AvatarOptions } from "./types";
 
 export { createAvatar, createAvatarDataUri } from "./svg";
+export { drawAvatar } from "./canvas";
 export { hashSeed, fnv1a } from "./hash";
 export { sha256, toHex } from "./sha256";
 export { normalizeSeed, createSeedRng } from "./seed";
