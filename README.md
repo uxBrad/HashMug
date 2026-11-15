@@ -78,6 +78,10 @@ Trait overrides exist for the sandbox and tests only, under `@hashmug/core/inter
 3. Eye, brow, nose and mouth positions are pulled inside a safe circle so round crops never cut features.
 4. Eyes and ink are nudged until WCAG contrast with the background is at least 3:1.
 
+## Determinism
+
+The same seed must give byte-identical SVG everywhere. `packages/core/test/vectors.json` pins 39 inputs (unicode, empty, very long, EIP-55 case variants, size and radius options) to SHA-256 hashes of the SVG. They pass in Node and in Chrome. Safari and Firefox are not yet checked. If a vector fails, an avatar changed: ship a new version, do not re-pin.
+
 ## Roadmap
 
 See [ROADMAP.md](ROADMAP.md).
