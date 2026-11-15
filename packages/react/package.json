@@ -7,10 +7,57 @@
   "main": "./dist/index.cjs",
   "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
-  "exports": { ".": { "types": "./dist/index.d.ts", "import": "./dist/index.js", "require": "./dist/index.cjs" } },
-  "files": ["dist"],
-  "scripts": { "build": "tsup", "test": "vitest run", "typecheck": "tsc --noEmit" },
-  "dependencies": { "@hashmug/core": "workspace:*" },
-  "peerDependencies": { "react": ">=17" },
-  "devDependencies": { "@types/react": "^18.3.0", "@types/react-dom": "^18.3.0", "react": "^18.3.1", "react-dom": "^18.3.1", "tsup": "^8.3.0", "typescript": "^5.6.0", "vitest": "^2.1.0" }
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@hashmug/core": "workspace:*"
+  },
+  "peerDependencies": {
+    "react": ">=17"
+  },
+  "devDependencies": {
+    "@types/react": "^18.3.0",
+    "@types/react-dom": "^18.3.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "tsup": "^8.3.0",
+    "typescript": "^5.6.0",
+    "vitest": "^2.1.0"
+  },
+  "author": "Brad Cooper",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/uxBrad/HashMug.git",
+    "directory": "packages/react"
+  },
+  "homepage": "https://github.com/uxBrad/HashMug#readme",
+  "bugs": {
+    "url": "https://github.com/uxBrad/HashMug/issues"
+  },
+  "keywords": [
+    "avatar",
+    "identicon",
+    "hash",
+    "deterministic",
+    "svg",
+    "wallet",
+    "ethereum"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "sideEffects": false
 }

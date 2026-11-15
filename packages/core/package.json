@@ -20,7 +20,9 @@
       "require": "./dist/internal.cjs"
     }
   },
-  "files": ["dist"],
+  "files": [
+    "dist"
+  ],
   "scripts": {
     "build": "tsup",
     "test": "vitest run",
@@ -30,5 +32,27 @@
     "tsup": "^8.3.0",
     "typescript": "^5.6.0",
     "vitest": "^2.1.0"
+  },
+  "author": "Brad Cooper",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/uxBrad/HashMug.git",
+    "directory": "packages/core"
+  },
+  "homepage": "https://github.com/uxBrad/HashMug#readme",
+  "bugs": {
+    "url": "https://github.com/uxBrad/HashMug/issues"
+  },
+  "keywords": [
+    "avatar",
+    "identicon",
+    "hash",
+    "deterministic",
+    "svg",
+    "wallet",
+    "ethereum"
+  ],
+  "publishConfig": {
+    "access": "public"
   }
 }

@@ -58,7 +58,7 @@ import { HashMug } from "@hashmug/react";   // or @hashmug/vue
 ```
 
 ```html
-<!-- plain page: the self-contained build, no bundler needed -->
+<!-- plain page, no bundler: either build is self-contained -->
 <script src="node_modules/@hashmug/web-component/dist/index.global.js"></script>
 <!-- with a bundler: import "@hashmug/web-component"; -->
 <identicon-avatar seed="0xAbC..." size="64" radius="round" label="Profile picture"></identicon-avatar>
