@@ -1,0 +1,6 @@
+name = "hashmug-avatars-png"
+main = "dist/worker-png.js"
+compatibility_date = "2025-01-01"
+# Deploy: pnpm --filter @hashmug/edge build && npx wrangler deploy -c wrangler.png.toml
+# Serves SVG and PNG. PNG rendering uses @resvg/resvg-wasm (about 2.5 MB), so it
+# needs the Workers paid plan size limit if you are near the free 3 MB cap.

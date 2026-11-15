@@ -6,7 +6,10 @@
   "type": "module",
   "main": "./dist/app.js",
   "types": "./dist/app.d.ts",
-  "files": ["dist", "wrangler.toml"],
+  "files": [
+    "dist",
+    "wrangler.toml"
+  ],
   "scripts": {
     "build": "tsup",
     "start": "node dist/node.js",
@@ -14,9 +17,10 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@hono/node-server": "^1.13.0",
     "@hashmug/core": "workspace:*",
     "@hashmug/png": "workspace:*",
+    "@hono/node-server": "^1.13.0",
+    "@resvg/resvg-wasm": "^2.6.2",
     "hono": "^4.6.0"
   },
   "devDependencies": {

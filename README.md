@@ -66,7 +66,7 @@ const png = avatarPng("0xAbC...", { radius: 0.5 }, 256);
 <img src="https://your-host/v1/avatar/0xAbC....svg?radius=round" width="64" height="64" alt="">
 ```
 
-Endpoint: `GET /v1/avatar/{seed}.svg|.png` with query `size` and `radius` only. Immutable cache headers. Cloudflare: `pnpm --filter @hashmug/edge build` then `wrangler deploy` (SVG only). Node: `pnpm --filter @hashmug/edge start` (SVG and PNG).
+Endpoint: `GET /v1/avatar/{seed}.svg|.png` with query `size` and `radius` only. Immutable cache headers. Cloudflare: `pnpm --filter @hashmug/edge build` then `wrangler deploy` (SVG only), or `wrangler deploy -c wrangler.png.toml` for SVG and PNG (resvg compiled to WebAssembly). Node: `pnpm --filter @hashmug/edge start` (SVG and PNG).
 
 The web component sets `role="img"` and a neutral `aria-label` (never the seed, since an address read aloud is noise). Use `label` to name it or `decorative` to hide it.
 
