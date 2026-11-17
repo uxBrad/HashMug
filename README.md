@@ -9,6 +9,15 @@ const svg = createAvatar("brad@example.com");
 const round = createAvatar("0xabc...", { radius: 0.5, size: 64 });
 ```
 
+## Install
+
+```
+npm install @hashmug/core        # engine, SVG out
+npm install @hashmug/react       # or @hashmug/vue, @hashmug/web-component
+npm install @hashmug/png         # PNG in Node
+npm install @hashmug/edge        # HTTP endpoint (Hono)
+```
+
 ## Examples
 
 Any text works as a seed: names, handles, emails, ENS names, wallet addresses. Same seed, same face, everywhere.
